@@ -25,7 +25,21 @@ function Create() {
 
    
   
-    
+    const handleUploadImage = (image) => {
+      const data = new FormData();
+      data.append('file',image);
+      data.append('upload_preset','fluencyApp')
+      data.append("cloud_name","bhavesh07")
+                
+   
+     fetch("https://api.cloudinary.com/v1_1/bhavesh07/Home/upload",{
+      method : "post",
+      body: data,
+     }).then(res => res.json())
+       .then(data => {
+             console.log("MESSAGE RECI = ",data);
+          })
+    }
     const handleChooseImage = () => {
         const options = {
                 noData : true,
@@ -39,28 +53,27 @@ function Create() {
                     setPhoto(response.assets[0].uri);
                 console.log('User selected a file form camera or gallery', response); 
                 setPhotoName(response.assets[0].fileName);
-                const data = new FormData();
-                data.append('name', 'avatar');
-                data.append('fileData', {
-                    uri : response.assets[0].uri,
-                    type: response.assets[0].type,
-                    name: response.assets[0].fileName
-                  });
-                  // console.log("DATA  = ",data);
-                const config = {
-                    method: 'POST',
-                    headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                              },
-                    body: data,
-                  };
+                let newFile = {
+                  uri : response.assets[0].uri,
+                  type : response.assets[0].type,
+                  name : response.assets[0].name
+                };
+
+                handleUploadImage(newFile);
+                  // const config = {
+                  //   method: 'POST',
+                  //   headers: {
+                  //   'Accept': 'application/json',
+                  //   'Content-Type': 'multipart/form-data',
+                  //             },
+                  //   body: data,
+                  // };
                   // console.log("CONFIg ",config.body);
                   // console.log("CONFIg ",config);
-                  fetch("http://192.168.43.13:3001/upload", config)
-                  .then((checkStatusAndGetJSONResponse)=>{       
-                    console.log("check = "+checkStatusAndGetJSONResponse);
-                  }).catch((err)=>{console.log(err)});
+                  // fetch("http://192.168.43.13:3001/upload", config)
+                  // .then((checkStatusAndGetJSONResponse)=>{       
+                  //   console.log("check = "+checkStatusAndGetJSONResponse);
+                  // }).catch((err)=>{console.log(err)});
                   
                 }
             }else if (response.error) {

@@ -30,7 +30,7 @@ function App(){
   return(
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='StartScreen' >
+        <Stack.Navigator initialRouteName='Create' >
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
