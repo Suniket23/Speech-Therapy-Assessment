@@ -25,26 +25,29 @@ function Create() {
 
    
   
-    const handleUploadImage = (image) => {
-      const data = new FormData();
-      data.append('file',image);
-      data.append('upload_preset','fluencyApp')
-      data.append("cloud_name","bhavesh07")
+    const handleUploadImage = (response) => {
+        const data = new FormData();
+                data.append("file", 'data:image/jpg;base64,' + response.assets[0].base64);
+                data.append("cloud_name", "bhavesh07");
+        data.append("upload_preset", "fluencyApp");
                 
    
-     fetch("https://api.cloudinary.com/v1_1/bhavesh07/Home/upload",{
+     fetch("https://api.cloudinary.com/v1_1/bhavesh07/image/upload",{
       method : "post",
       body: data,
      }).then(res => res.json())
        .then(data => {
              console.log("MESSAGE RECI = ",data);
+          }).catch((err) => {
+              console.log(err)
           })
     }
     const handleChooseImage = () => {
         const options = {
-                noData : true,
-                mediaTypes: 'Images',
+//                noData : true,
+            mediaTypes: 'Images',
                 quality: 0.1,
+            includeBase64: true
               };
           ImagePicker.launchImageLibrary(options,(response) => {
             if(response.didCancel !== true)
@@ -59,7 +62,7 @@ function Create() {
                   name : response.assets[0].name
                 };
 
-                handleUploadImage(newFile);
+                handleUploadImage(response);
                   // const config = {
                   //   method: 'POST',
                   //   headers: {
@@ -71,7 +74,7 @@ function Create() {
                   // console.log("CONFIg ",config.body);
                   // console.log("CONFIg ",config);
                   // fetch("http://192.168.43.13:3001/upload", config)
-                  // .then((checkStatusAndGetJSONResponse)=>{       
+                  // .then((checkStatusAndGetJSONResponse)=>{
                   //   console.log("check = "+checkStatusAndGetJSONResponse);
                   // }).catch((err)=>{console.log(err)});
                   
