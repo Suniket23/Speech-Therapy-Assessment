@@ -36,8 +36,9 @@ export class Voice1 extends Component {
 
     AudioRecord.on('data', data => {
       const chunk = Buffer.from(data, 'base64');
-      console.log('chunk size', chunk.byteLength);
+      // console.log('chunk size', chunk.byteLength);
       // do something with audio chunk
+      // console.log("CHUNK - ",chunk);
     });
   }
 
@@ -55,7 +56,7 @@ export class Voice1 extends Component {
 
   start = () => {
     console.log('start record');
-    this.setState({ audioFile: '', recording: true });
+    this.setState({ audioFile: '', recording: true});
     AudioRecord.start();
   };
 

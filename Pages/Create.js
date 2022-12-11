@@ -5,7 +5,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useFonts, Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium } from '@expo-google-fonts/poppins';
 import * as ImagePicker from "react-native-image-picker";
 import {useNavigation} from "@react-navigation/native";
-import * as RNFS from 'react-native-fs';
+// import * as RNFS from 'react-native-fs';
+var RNFS = require('react-native-fs');
 import {Buffer} from 'buffer';
 import { LogBox } from 'react-native';
 
@@ -18,7 +19,9 @@ function Create() {
     const [photo,setPhoto] = useState(null);
     const [photoName,setPhotoName] = useState("");
     const [categoryName,setCategoryName] = useState("");
+    const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
+    const serverIP = "http://192.168.43.13:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
@@ -27,35 +30,35 @@ function Create() {
   
     const handleUploadImage = (response) => {
         const data = new FormData();
-                data.append("file", 'data:image/jpg;base64,' + response.assets[0].base64);
-                data.append("cloud_name", "bhavesh07");
+       
+        data.append("file", 'data:image/jpg;base64,' + response.assets[0].base64);
+        data.append("cloud_name", "bhavesh07");
         data.append("upload_preset", "fluencyApp");
                 
-   
+       
      fetch("https://api.cloudinary.com/v1_1/bhavesh07/image/upload",{
       method : "post",
       body: data,
      }).then(res => res.json())
        .then(data => {
-             console.log("MESSAGE RECI = ",data);
+             setPhotoName(data.url);
           }).catch((err) => {
               console.log(err)
           })
     }
     const handleChooseImage = () => {
         const options = {
-//                noData : true,
             mediaTypes: 'Images',
-                quality: 0.1,
+            quality: 0.1,
             includeBase64: true
-              };
+            };
           ImagePicker.launchImageLibrary(options,(response) => {
             if(response.didCancel !== true)
             { 
                 if (response.didCancel !== true) {
                     setPhoto(response.assets[0].uri);
-                console.log('User selected a file form camera or gallery', response); 
-                setPhotoName(response.assets[0].fileName);
+                
+                
                 let newFile = {
                   uri : response.assets[0].uri,
                   type : response.assets[0].type,
@@ -63,21 +66,6 @@ function Create() {
                 };
 
                 handleUploadImage(response);
-                  // const config = {
-                  //   method: 'POST',
-                  //   headers: {
-                  //   'Accept': 'application/json',
-                  //   'Content-Type': 'multipart/form-data',
-                  //             },
-                  //   body: data,
-                  // };
-                  // console.log("CONFIg ",config.body);
-                  // console.log("CONFIg ",config);
-                  // fetch("http://192.168.43.13:3001/upload", config)
-                  // .then((checkStatusAndGetJSONResponse)=>{
-                  //   console.log("check = "+checkStatusAndGetJSONResponse);
-                  // }).catch((err)=>{console.log(err)});
-                  
                 }
             }else if (response.error) {
               console.log('ImagePicker Error: ', response.error);
@@ -89,62 +77,43 @@ function Create() {
       
     }
 
-//  
-// User selected a file form camera or gallery {"assets": [{"fileName": "rn_image_picker_lib_temp_95fa1d64-63e5-4e93-8b5f-08a3e7f9ae65.jpg", "fileSize": 284864, "height": 2760, "type": "image/jpeg", "uri": "file:///data/user/0/com.reactproject/cache/rn_image_picker_lib_temp_95fa1d64-63e5-4e93-8b5f-08a3e7f9ae65.jpg", "width": 4912}]}   Data recieved from voice =  {"_parts": [["name", "avatar"], ["fileData", [Object]]]}
-//  LOG  CONFIg  {"_parts": [["name", "avatar"], ["fileData", [Object]]]}
-//  LOG  CONFIg  {"body": {"_parts": [[Array], [Array]]}, "headers": {"Accept": "application/json", "Content-Type": "multipart/form-data"}, "hello": "world", "method": "POST"}
-     
+    
     const pull_data = (data) => {
       console.log("Data recieved from category = ",data);
-      setCategoryName(data);
+      setCategoryName(data.title);
+      setSubCategoryName(data.subTitle);
     }
-    const pull_voice = (data) => {
-      console.log("Data recieved from voice = ",data);
-      var dataToSend;
+    const pull_voice = async (data) => {
+    
 
-      RNFS.readFile(data, 'base64') // r is the path to the .wav file on the phone
-      .then((data) => {
+      const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
       
-          dataToSend = data;
-      })
+      const fd = new FormData();
+      fd.append("file","data:audio/mpeg;base64,"+tempData);
+      fd.append("upload_preset", "fluencyApp");
+      fd.append("cloud_name","bhavesh07");
+      fd.append("resource_type", "video");
 
-      var chunk = Buffer.from(data,'base64');
-      var currentData = new Date();
-      var addFileName = 'sound_' + currentData.getDate() + '_' + currentData.getMonth() + '_' + currentData.getFullYear() + '_' + currentData.getHours() + '_' + currentData.getMinutes() + '_' + currentData.getSeconds() + '_' + currentData.getMilliseconds();
-
-      setVoiceName(addFileName);
-      console.log("File Name = ",addFileName);
-      
-
-      const dataA = new FormData();
-      console.warn("Data to send = ",chunk);
-      dataA.append('name',JSON.stringify(chunk));
-      dataA.append('fileName',addFileName)
-      dataA.append('audio', {
-        audioData : data,
-      });
-      console.log("DATA AAA  = ",dataA);
-      const config = {
+      fetch('https://api.cloudinary.com/v1_1/bhavesh07/auto/upload', {
         method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data',
-                 },
-        body: dataA,
-       };
-      fetch("http://192.168.43.13:3001/uploadAudio", config)
-                  .then((checkStatusAndGetJSONResponse)=>{       
-                    console.log("check = "+checkStatusAndGetJSONResponse);
-                  }).catch((err)=>{console.log(err)});
-      
+        body: fd
+      }).then(res => res.json())
+      .then(data => {
+            setVoiceName(data.url);
+            console.log("DATA Recieved = ",data);
+         }).catch((err) => {
+             console.log(err)
+         })
+     
     }
 
-    const onSubmitData = () => {
-      // console.warn("submit button clicked ");
+    const onSubmitData = async() => {
+      console.log("submit button clicked ");
       const data = new FormData();
       data.append('imageName',photoName);
       data.append('audioName',voiceName);
       data.append('category',categoryName);
+      data.append('subCategory',subCategoryName);
       data.append('allData',{
           imageName : photoName
       })
@@ -157,7 +126,7 @@ function Create() {
         body: data
        };
        console.log("CONFIG -> ",config);
-      fetch("http://192.168.43.13:3001/storeData", config)
+       fetch(serverIP+"storeData", config)
                   .then((checkStatusAndGetJSONResponse)=>{       
                     console.log("check = "+checkStatusAndGetJSONResponse);
                   }).catch((err)=>{console.log(err)});

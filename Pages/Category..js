@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { StyleSheet,TextInput,TouchableHighlight,Text,View} from 'react-native';
 import { NativeBaseProvider,  VStack,Icon, addTextAndPropsToStrings} from "native-base";
 import { Dropdown } from 'react-native-element-dropdown';
-import { IconButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import {LogBox} from "react-native";
 
 
@@ -11,20 +11,27 @@ LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 function Category(props) {
   
   const [text,setText] = useState("");
+  const [subText,setSubText] = useState("");
   const [value, setValue] = useState(null);
+  const [value1,setValue1] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
-  const [data,setData] = useState([]);  
-
+  const [data,setData] = useState([]); 
+  const [subData,setSubData] = useState([]); 
+  const obj = {title : "",subTitle : ""};
+  const serverIP = "http://192.168.43.13:3001/";
   const onTextChange = (txt) => {
     setText(txt);
   }
-
+  const onSubTextChange = (text) => {
+    setSubText(text);
+  }
   const insertData = () => {
     console.log("text= "+JSON.stringify(text));
-    fetch('http://192.168.43.13:3001/insert',{
+    fetch(serverIP+'insert',{
       method:'POST',
         body:JSON.stringify({
-          title:text
+          title:text,
+          subTitle:subText
         }),
         mode: 'no-cors',
         headers: {
@@ -35,43 +42,72 @@ function Category(props) {
     .then(() => getData());
   }
 
-  const getData = () => {
+  const getCategoryData = () => {
     console.log("text= "+JSON.stringify(text));
-    fetch('http://192.168.43.13:3001/getInfo')
+    fetch(serverIP + 'getCategory')
     .then(response => response.json())
     .then(data => setData(data))
   }
   
+  const getSubCategoryData = () => {
+    fetch(serverIP + 'getSubData')
+    .then(response => response.json())
+    .then(data => setSubData(data));
+  }
   
   useEffect(() => {
-    getData();
+    getCategoryData();
+    getSubCategoryData();
   },[]);
 
 
   const ontxtChange = (data) => {
-    props.route.params.onGoBack(data);
+    // props.route.params.onGoBack(data);
+     setText(data);
+  }
+  const onSubTxtChange = (data) => {
+    setSubText(data);
   }
 
+  useEffect(() => {
+    obj.title = text;
+    obj.subTitle = subText;
+    props.route.params.onGoBack(obj);
+  },[text,subText]);
 
-
+  console.log("DATA = ",data);
   
   return (
     <NativeBaseProvider>
-        
-        <View style={{flexDirection:'row'}}>
-            <View style={styles.container}>
+         <VStack space={3} alignItems="center" style={styles.container}>
+        <View >
+            <View >
             <TextInput
-                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white'}} 
+                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',paddingHorizontal: 100,marginVertical:20,}} 
                 placeholder = 'Add Category'
                 value={text}
                 onChangeText={(text) => onTextChange(text)}
               />
+            
+             <TextInput
+                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',paddingHorizontal: 100}} 
+                placeholder = 'Add Sub Category'
+                value={subText}
+                onChangeText={(text) => onSubTextChange(text)}
+              />
             </View>
-            <IconButton icon="plus-circle" size={30} onPress={insertData} style={styles.button}/>
-            <View style={styles.container}>
+            <View style={styles.button1}>
+              <Button
+                mode="outlined"
+                icon="plus-circle"
+                onPress={insertData}>
+                Add Records
+              </Button>
+            </View>
+            <View style={{flexDirection:'row'}}>
 
               <Dropdown
-                style={[styles.dropdown, isFocus && { borderColor: 'blue' },styles.containerType]}
+                style={[styles.dropdown, isFocus && { borderColor: 'blue'},styles.containerType]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
@@ -81,7 +117,7 @@ function Category(props) {
                 maxHeight={300}
                 labelField="label"
                 valueField="val"
-                placeholder={!isFocus ? 'Select item' : '...'}
+                placeholder={!isFocus ? 'Category' : '...'}
                 searchPlaceholder="Search..."
                 value={value}
                 onFocus={() => setIsFocus(true)}
@@ -93,10 +129,36 @@ function Category(props) {
                 
                     }}       
                 />
+                
             </View>
+            <View style={{flexDirection:'row', marginTop:10}}> 
+                <Dropdown
+                style={[styles.dropdown, isFocus && { borderColor: 'blue' },styles.containerType]}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={subData}
+                search
+                maxHeight={300}
+                labelField="subLabel"
+                valueField="val"
+                placeholder={!isFocus ? 'Sub Category' : '...'}
+                searchPlaceholder="Search..."
+                value={value}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={item => {
+                onSubTxtChange(item.subLabel);
+                setValue(item.subLabel);
+                setIsFocus(false);
+                
+                    }}       
+                />
+                </View>
            
         </View>
-      
+        </VStack>
     </NativeBaseProvider>
   )
 }
@@ -104,8 +166,8 @@ function Category(props) {
 const styles = StyleSheet.create({
     
     container : {
-      paddingVertical:100,
-      marginHorizontal:15,
+      // paddingVertical:100,
+      // marginHorizontal:15,
       flex:1,
       alignContent:'center',
       justifyContent:'center'
@@ -117,6 +179,8 @@ const styles = StyleSheet.create({
     },
    button : {
       marginTop:100,
+   },button1 : {
+      margin: 20,
    }
    ,dropdown: {
     height: 50,
