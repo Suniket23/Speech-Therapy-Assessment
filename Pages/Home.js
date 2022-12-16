@@ -32,10 +32,10 @@ function Home({navigation}){
         <Button w={250} padding={50} style={styles.button}  endIcon={<Icon name="plus-circle" size={50} color="#FFF"/>} onPress={() => navigation.navigate('Create')} >
        
         </Button>
-        <Button w={250} padding={50} colorScheme='blueGray'  endIcon={<Icon name="edit" size={50} color="#FFF"/>} onPress={() => {console.warn("Button 2")}}>
+        <Button w={250} padding={50} colorScheme='blueGray'  endIcon={<Icon name="edit" size={50} color="#FFF"/>} onPress={() => navigation.navigate('Update')}>
          
         </Button>
-        <Button w={250} padding={50} colorScheme='red' endIcon={<MIcon name="delete" size={50} color= "#FFF"/>} onPress={() => {console.warn("Button 3")}}>
+        <Button w={250} padding={50} colorScheme='red' endIcon={<MIcon name="delete" size={50} color= "#FFF"/>} onPress={() => navigation.navigate('Delete')}>
           
         </Button>
         

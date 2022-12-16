@@ -24,7 +24,7 @@ import { Button } from 'react-native-paper';
 
 
 
-function SubCategory(props){
+function SubUpdate(props){
     // console.log("Props = ",props.route.params);
     
     const navigation = useNavigation();
@@ -58,7 +58,7 @@ function SubCategory(props){
     const renderItem = ({item}) =>{
         console.log("ITEM = ",item);
         return(
-          <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('Display',[item.label,item.subLabel]) }>
+          <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('ChooseOptions',[item.label,item.subLabel]) }>
               <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.subLabel} </Text>        
           </Button>
         );
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
  
  
 })
-export default SubCategory;
+export default SubUpdate;

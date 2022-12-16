@@ -133,6 +133,98 @@ app.post('/getSubCategoryData',upload1.any('subCategory'),(req,res,next) =>{
     
 })
 
+app.post('/deleteSubCategory',upload1.single('subValue'),(req,res,next) => {
+    console.log("In delete Sub category");
+    const  obj = JSON.parse(JSON.stringify(req.body));
+    console.log("obj = ",obj);
+    const value = obj.subValue; 
+   
+    pool.query('delete from subCategory where subLabel = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from subcategory = ",results);
+        // res.send(results);
+    })
+    
+    pool.query('delete from records where subCategoryName = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from records = ",results);
+        // res.send(results);
+    })
+
+})
+
+app.post('/deleteCategory',upload1.single('subValue'),(req,res,next) => {
+    console.log("In delete  category");
+    const  obj = JSON.parse(JSON.stringify(req.body));
+    console.log("obj = ",obj);
+    const value = obj.subValue; 
+   
+    pool.query('delete from category where label = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from category = ",results);
+        // res.send(results);
+    })
+    pool.query('delete from subCategory where label = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from subcategory = ",results);
+        // res.send(results);
+    })
+    pool.query('delete from records where categoryName = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from records = ",results);
+        // res.send(results);
+    })
+
+})
+
+app.post('/updateData',upload1.single('category'),(req,res,next) => {
+    console.log("IN Update Data");
+    const  obj = JSON.parse(JSON.stringify(req.body));
+    console.log("obj = ",obj);
+    const category = obj.category;
+    const subCategory = obj.subCategory;   
+    const imageURL = obj.imageURL;
+    const audioURL = obj.audioURL;
+
+    console.log("Image url = ",imageURL);
+    console.log("Audio URL = ",audioURL);
+    if(audioURL && imageURL)
+    {
+        pool.query('update records set ' + 'imageURL=?, ' + 'audioURL=? where ' + 'categoryName=? and ' + 'subCategoryName=?',[imageURL,audioURL,category,subCategory],function(err,results,fields) {
+            if(err)
+                    throw err;
+                console.log("Results of Image Audio = ",results);
+                res.send(results);
+        })
+    }
+    else if(imageURL)
+    {
+        pool.query('update records set ' + 'imageURL=? where ' + 'categoryName=? and ' + 'subCategoryName=?',[imageURL,category,subCategory],function(err,results,fields) {
+            if(err)
+                    throw err;
+                console.log("Results of Image  = ",results);
+                res.send(results);
+        })
+    }
+    else if(audioURL)
+    {
+        pool.query('update records set ' + 'audioURL=? where ' + 'categoryName=? and ' + 'subCategoryName=?',[audioURL,category,subCategory],function(err,results,fields) {
+            if(err)
+                    throw err;
+                console.log("Results of Audio = ",results);
+                res.send(results);
+        })
+    }
+    
+
+})
+
+
 app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
     console.log("IN Image audio");
     const  obj = JSON.parse(JSON.stringify(req.body));

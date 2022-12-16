@@ -59,7 +59,9 @@ function Display(props){
         getData();
         // console.log("Obj data= ",objData[0].imageURL);
     },[]);
-
+    let [fontsLoaded] = useFonts({
+      Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
+    });
     console.log("IMage url = ",imageURL);
     console.log("Audio url = ",audioURL);
    
@@ -79,10 +81,10 @@ function Display(props){
             
             <View style={styles.playPause}>
             {pause ? <Button onPress={togglePlayPause} w={250} style={styles.button} startIcon={<Icon name="play-circle" size={30} color="#FFF"/>}>
-              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> Play </Text>
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="white"> Play </Text>
             </Button> : 
              <Button onPress={togglePlayPause} w={250} startIcon={<Icon name="pause-circle" size={30} color="#FFF"/>}>
-                <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">Pause</Text>
+                <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="white">Pause</Text>
               </Button>}
             <Video source={{uri : audioURL}} audioOnly paused={pause}/>
             </View>

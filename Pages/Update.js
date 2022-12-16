@@ -23,31 +23,29 @@ import { Center } from 'native-base';
 import { Button } from 'react-native-paper';
 
 
-function User(){
+function Update(){
     const navigation = useNavigation();
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
     const [data,setData] = useState([]);
-    var [imageURL,setURL] = useState("");
+    
     const serverIP = "http://192.168.43.13:3001/";
     const getData = async() => {
        
         fetch(serverIP + 'getCategory')
         .then(response => response.json())
-        .then(results => {console.log("results = ",results); setData(results); setURL(results[0].imageURL)});
-        // imageURL = await data[0].imageURL;
+        .then(results => {console.log("results = ",results); setData(results)});
+        
     }
     useEffect(() => {
         getData();
     },[])
    
-    
-    // console.log("data = ",imageURL);
     const renderItem = ({item}) =>{
-      // console.log("ITEM = ",item);
+      
       return(
-        <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('SubCategory',item.label) }>
+        <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('SubUpdate',item.label) }>
           <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.label} </Text>
         </Button>
       );
@@ -73,4 +71,4 @@ const styles = StyleSheet.create({
  
  
 })
-export default User;
+export default Update;
