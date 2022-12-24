@@ -94,7 +94,7 @@ app.get('/getInfo',function(req,res){
 })
 app.get('/getCategory',function(req,res) {
    
-    pool.query('select * from category ',function(err,results,field) {
+    pool.query('select * from category group by label ',function(err,results,field) {
         if(err)
             throw err;
         console.log("Results of category = ",results);
@@ -102,6 +102,7 @@ app.get('/getCategory',function(req,res) {
     })
     
 })
+
 app.get('/getSubData',function(req,res) {
     console.log("IN sub data request ");
     pool.query('select * from subCategory ',function(err,results,field) {
