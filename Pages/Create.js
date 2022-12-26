@@ -5,10 +5,11 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useFonts, Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium } from '@expo-google-fonts/poppins';
 import * as ImagePicker from "react-native-image-picker";
 import {useNavigation} from "@react-navigation/native";
-// import * as RNFS from 'react-native-fs';
+;
 var RNFS = require('react-native-fs');
-import {Buffer} from 'buffer';
+
 import { LogBox } from 'react-native';
+import { Alert } from 'react-native';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -130,6 +131,18 @@ function Create() {
                   .then((checkStatusAndGetJSONResponse)=>{       
                     console.log("check = "+checkStatusAndGetJSONResponse);
                   }).catch((err)=>{console.log(err)});
+
+      Alert.alert(
+                    "Data Submitted",
+                    "Record added successfully",                   
+                    [
+                      {
+                        text: "Ok",
+                        style: "cancel"
+                      },                     
+                    ]
+                  );
+                
     }
     
   return (

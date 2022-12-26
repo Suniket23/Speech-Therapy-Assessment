@@ -3,7 +3,7 @@ import { StyleSheet,TextInput,TouchableHighlight,Text,View} from 'react-native';
 import { NativeBaseProvider,  VStack,Icon, addTextAndPropsToStrings} from "native-base";
 import { Dropdown } from 'react-native-element-dropdown';
 import { Button } from 'react-native-paper';
-import {LogBox} from "react-native";
+import {LogBox,Alert} from "react-native";
 
 
 // import axios from "axios" ;
@@ -37,9 +37,22 @@ function Category(props) {
         headers: {
           "Content-type": "application/json; charset=UTF-8"
       } 
+      
+
+      
     })
     .then(response => response.json())
     .then(() => getData());
+    Alert.alert(
+      "Data Submitted",
+      "Categories Added Successfully",
+      [
+        {
+          text: "Ok",
+          style: "cancel"
+        },                     
+      ]
+    );
   }
 
   const getCategoryData = () => {
