@@ -19,7 +19,7 @@ function ChooseSubDelete() {
   const navigation = useNavigation();
   const [data,setData] = useState([]);
   
-  const serverIP = "http://192.168.43.13:3001/";
+  const serverIP = "http://192.168.13.91:3001/";
   const getCategoryData = () => {
     // console.log("text= "+JSON.stringify(text));
     fetch(serverIP + 'getCategory')

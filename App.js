@@ -14,7 +14,6 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import Create from './Pages/Create';
-// import Voice from './Pages/Voice';
 import Category from './Pages/Category';
 import Voice1 from './Pages/Voice1';
 import SubCategory from './Pages/SubCategory';
@@ -24,8 +23,9 @@ import Delete from './Pages/Delete';
 import DeleteSubCategory from './Pages/DeleteSubCategory';
 import ChooseSubDelete from './Pages/ChooseSubDelete';
 import Update from './Pages/Update';
-import SubUpdate from './Pages/SubUpdate'
-import ChooseOptions from './Pages/ChooseOptions'
+import SubUpdate from './Pages/SubUpdate';
+import ChooseOptions from './Pages/ChooseOptions';
+import Assessment from './Pages/Assessment';
 
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
@@ -59,6 +59,7 @@ function App(){
           <Stack.Screen name="SubUpdate" component={SubUpdate} />
           <Stack.Screen name="ChooseOptions" component={ChooseOptions} />
           <Stack.Screen name="Voice1" component={Voice1} />
+          <Stack.Screen name="Assessment" component={Assessment} />
         </Stack.Navigator>
       </NavigationContainer> 
 

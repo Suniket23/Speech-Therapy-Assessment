@@ -29,13 +29,16 @@ function Home({navigation}){
     <NativeBaseProvider>
       
       <VStack space={4} alignItems="center" style={styles.container}>
-        <Button w={250} padding={50} style={styles.button}  endIcon={<Icon name="plus-circle" size={50} color="#FFF"/>} onPress={() => navigation.navigate('Create')} >
+        <Button w={240} height={140} padding={50} style={styles.button}  endIcon={<Icon name="plus-circle" size={40} color="#FFF"/>} onPress={() => navigation.navigate('Create')} >
        
         </Button>
-        <Button w={250} padding={50} colorScheme='blueGray'  endIcon={<Icon name="edit" size={50} color="#FFF"/>} onPress={() => navigation.navigate('Update')}>
+        <Button w={240} height={140} padding={50} colorScheme='blueGray'  endIcon={<Icon name="edit" size={40} color="#FFF"/>} onPress={() => navigation.navigate('Update')}>
          
         </Button>
-        <Button w={250} padding={50} colorScheme='red' endIcon={<MIcon name="delete" size={50} color= "#FFF"/>} onPress={() => navigation.navigate('Delete')}>
+        <Button w={240} height={140} padding={50} colorScheme='red' endIcon={<MIcon name="delete" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Delete')}>
+          
+        </Button>
+        <Button w={240} height={140} padding={50} colorScheme='green' endIcon={<MIcon name="fa-solid fa-pen-to-square" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Assessment')}>
           
         </Button>
         

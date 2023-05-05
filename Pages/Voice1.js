@@ -28,7 +28,7 @@ export class Voice1 extends Component {
     const options = {
       sampleRate: 16000,
       channels: 1,
-      bitsPerSample: 16,
+      bitsPerSample: 16, 
       wavFile: 'test.wav'
     };
 
@@ -36,7 +36,7 @@ export class Voice1 extends Component {
 
     AudioRecord.on('data', data => {
       const chunk = Buffer.from(data, 'base64');
-      // console.log('chunk size', chunk.byteLength);
+      console.log('chunk size', chunk.byteLength);
       // do something with audio chunk
       // console.log("CHUNK - ",chunk);
     });

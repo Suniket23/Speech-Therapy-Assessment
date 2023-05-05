@@ -18,7 +18,7 @@ function Category(props) {
   const [data,setData] = useState([]); 
   const [subData,setSubData] = useState([]); 
   const obj = {title : "",subTitle : ""};
-  const serverIP = "http://192.168.43.13:3001/";
+  const serverIP = "http://192.168.13.91:3001/";
   const onTextChange = (txt) => {
     setText(txt);
   }
@@ -96,14 +96,14 @@ function Category(props) {
         <View >
             <View >
             <TextInput
-                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',paddingHorizontal: 100,marginVertical:20,}} 
+                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',color:'black',paddingHorizontal: 100,marginVertical:20,}} 
                 placeholder = 'Add Category'
                 value={text}
                 onChangeText={(text) => onTextChange(text)}
               />
             
              <TextInput
-                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',paddingHorizontal: 100}} 
+                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',color:'black',paddingHorizontal: 100}} 
                 placeholder = 'Add Sub Category'
                 value={subText}
                 onChangeText={(text) => onSubTextChange(text)}

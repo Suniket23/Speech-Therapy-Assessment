@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useFonts, Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium } from '@expo-google-fonts/poppins';
 import * as ImagePicker from "react-native-image-picker";
 import {useNavigation} from "@react-navigation/native";
-;
+
 var RNFS = require('react-native-fs');
 
 import { LogBox } from 'react-native';
@@ -22,7 +22,7 @@ function Create() {
     const [categoryName,setCategoryName] = useState("");
     const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
-    const serverIP = "http://192.168.43.13:3001/";
+    const serverIP = "http://192.168.13.91:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
@@ -33,11 +33,11 @@ function Create() {
         const data = new FormData();
        
         data.append("file", 'data:image/jpg;base64,' + response.assets[0].base64);
-        data.append("cloud_name", "bhavesh07");
+        data.append("cloud_name", "dplappado");
         data.append("upload_preset", "fluencyApp");
                 
        
-     fetch("https://api.cloudinary.com/v1_1/bhavesh07/image/upload",{
+     fetch("hhttps://api.cloudinary.com/v1_1/dplappado/image/upload",{
       method : "post",
       body: data,
      }).then(res => res.json())
@@ -51,6 +51,7 @@ function Create() {
         const options = {
             mediaTypes: 'Images',
             quality: 0.1,
+            allowsEditing:true,
             includeBase64: true
             };
           ImagePicker.launchImageLibrary(options,(response) => {
@@ -92,10 +93,10 @@ function Create() {
       const fd = new FormData();
       fd.append("file","data:audio/mpeg;base64,"+tempData);
       fd.append("upload_preset", "fluencyApp");
-      fd.append("cloud_name","bhavesh07");
+      fd.append("cloud_name","dplappado");
       fd.append("resource_type", "video");
 
-      fetch('https://api.cloudinary.com/v1_1/bhavesh07/auto/upload', {
+      fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
         method: 'POST',
         body: fd
       }).then(res => res.json())
@@ -108,10 +109,10 @@ function Create() {
      
     }
 
-    const onSubmitData = async() => {
+    const onSubmitData =async() => {
       console.log("submit button clicked ");
       const data = new FormData();
-      data.append('imageName',photoName);
+      data.append('imageName',photo);
       data.append('audioName',voiceName);
       data.append('category',categoryName);
       data.append('subCategory',subCategoryName);
@@ -124,8 +125,13 @@ function Create() {
         'Accept': 'application/json',
         'Content-Type': 'multipart/form-data',
                  },
-        body: data
-       };
+        body:JSON.stringify({
+          imgURL:photo,
+          audioURL:voiceName,
+          categoryName:categoryName,
+          subCategoryName:subCategoryName
+        }) 
+       }
        console.log("CONFIG -> ",config);
        fetch(serverIP+"storeData", config)
                   .then((checkStatusAndGetJSONResponse)=>{       
@@ -155,18 +161,18 @@ function Create() {
         {photo && <Image source={{uri : photo}} alt="Image" style={{width:250,height:250}}/> } 
         
         <Button w={250} colorScheme="blueGray" startIcon={<Icon name="camera" size={18} color="#FFF"/>} onPress={handleChooseImage}>
-            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> Choose फोटो  </Text>
+            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">Choose फोटो  </Text>
         </Button>
         <Button w={250} colorScheme="blueGray" startIcon={<Icon name="music" size={18} color="#FFF"/>} onPress={() => navigation.navigate('Voice1', {onGoBack : pull_voice})}>
-            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> Choose ऑडिओ  </Text>
+            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">Choose ऑडिओ  </Text>
         </Button>
 
         <Button w={250} colorScheme="blueGray" startIcon={<Icon name="music" size={18} color="#FFF"/>} onPress={() => navigation.navigate('Category', {onGoBack : pull_data})}>
-            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> Category  </Text>
+            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">Category  </Text>
         </Button>
    
         <Button w={250} colorScheme="blueGray"  >
-            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white" onPress={onSubmitData}>सबमिट  </Text>
+            <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white" onPress={onSubmitData}>सबमिट </Text>
         </Button>
         </VStack>
       

@@ -11,8 +11,13 @@ var util = require('util');
 var con = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'toor',
+    password:'Pastaway$33',
     database:'main'
+});
+
+con.connect(function(err){
+    if(err) throw err;
+    else console.log("connected!");
 });
 
 
@@ -28,7 +33,7 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'toor',
+    password:'Pastaway$33',
     database:'main'
 })
 
@@ -82,6 +87,52 @@ app.post('/insert',function(req,res) {
         console.log("results of inserting in sub category = ",results);
         // res.send(results);
     })
+})
+
+app.get('/storeData',function(req,res){
+    pool.query('select * from records ',function(err,results,field) {
+        if(err)
+            throw err;
+        console.log("results of records = ",results);
+        res.send(results);
+    })
+})
+app.post('/storeData',function(req,res){
+    const {photo,voiceName,categoryName,subCategoryName}=req.body;
+    console.log(req.body);
+    const sql = `INSERT INTO records (imageURL,audioURL,categoryName,subCategoryName) VALUES (?, ?, ?, ?)`;
+    pool.query(sql, [photo,voiceName,categoryName,subCategoryName], (error, res) => {
+        if (error) {
+          console.error(error);
+          res.status(500).send('Error inserting user');
+        }
+        //   else {
+        //   res.json('User inserted successfully');
+        // }
+    })
+})
+app.get('/assessment',function(req,res){
+    pool.query('select * from assessment ',function(err,results,field) {
+        if(err)
+            throw err;
+        console.log("results of getinfo = ",results);
+        res.send(results);
+    })
+})
+app.post('/assessment',function(req,res){
+    const {option1,option2,option3,correct_option}=req.body;
+    console.log(req.body);
+    // const {Option1,Option2,Option3,CorrectOption}=Info;
+    const sql = `INSERT INTO assessment (option1, option2, option3, correct_option) VALUES (?, ?, ?, ?)`;
+    pool.query(sql, [option1, option2, option3, correct_option], (error, res) => {
+        if (error) {
+          console.error(error);
+          res.status(500).send('Error inserting user');
+        }
+        //  else {
+        //   res.send('User inserted successfully');
+        // }
+    });
 })
 
 app.get('/getInfo',function(req,res){
