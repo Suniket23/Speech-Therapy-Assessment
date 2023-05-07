@@ -31,7 +31,7 @@ function SubCategory(props){
     const [objData,setobjData] = useState();
     const label = props.route.params;
     console.log("Sub label = ",label);
-    const serverIP = "http://192.168.13.91:3001/";
+    const serverIP = "http://192.168.1.6:3001/";
     const data = new FormData();
     data.append("subCategory",label);
     const config = {

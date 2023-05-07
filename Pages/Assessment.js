@@ -7,8 +7,9 @@ import {useNavigation} from "@react-navigation/native";
 import { Alert } from "react-native";
 import { json } from "body-parser";
 import * as ImagePicker from "react-native-image-picker";
+var RNFS = require('react-native-fs');
 import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-const serverIP = "http://192.168.13.91:3001/";
+const serverIP = "http://192.168.1.6:3001/";
 // import TextInput from "../src/components/TextInput";
 
 const Assessment=()=>{
@@ -87,11 +88,35 @@ const Assessment=()=>{
         }); 
      }
 
+     const pull_voice = async (data) => {
+    
+
+      const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
+      
+      const fd = new FormData();
+      fd.append("file","data:audio/mpeg;base64,"+tempData);
+      fd.append("upload_preset", "fluencyApp");
+      fd.append("cloud_name","dplappado");
+      fd.append("resource_type", "video");
+
+      fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
+        method: 'POST',
+        body: fd
+      }).then(res => res.json())
+      .then(data => {
+            setVoiceName(data.url);
+            console.log("DATA Recieved = ",data);
+         }).catch((err) => {
+             console.log(err)
+         })
+     
+    }
+
       const onSubmit =async()=>{
         const data={photo1,photo2,photo3,CorrectOption};
         setInfo(data);
         // alert(Option1);
-        fetch('http://192.168.13.91:3001/Assessment', {
+        fetch('http://192.168.1.6:3001/Assessment', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -127,7 +152,7 @@ const Assessment=()=>{
     return (
         <View style={styles.container}>
             <Text style={{marginBottom:8}}>Welcome to Assessment</Text>
-            <Button w={250} style={styles.btn} startIcon={<Icon name="music" size={18} color="#FFF"/>} /*onPress={() =>navigation.navigate('Voice1', {onGoBack : pull_voice})}*/>
+            <Button w={250} style={styles.btn} startIcon={<Icon name="music" size={18} color="#FFF"/>} onPress={() =>navigation.navigate('Voice2', {onGoBack : pull_voice})}>
             <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12,color:"white"}}> Choose ऑडिओ  </Text>
             </Button>
               <Button w={250} style={{paddingHorizontal: 100,marginVertical:10}} colorScheme="blueGray" startIcon={<Icon name="camera" size={18} color="#FFF"/>} onPress={handleChooseImage}>

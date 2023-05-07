@@ -22,7 +22,7 @@ function Create() {
     const [categoryName,setCategoryName] = useState("");
     const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
-    const serverIP = "http://192.168.13.91:3001/";
+    const serverIP = "http://192.168.1.7:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
@@ -37,11 +37,12 @@ function Create() {
         data.append("upload_preset", "fluencyApp");
                 
        
-     fetch("hhttps://api.cloudinary.com/v1_1/dplappado/image/upload",{
+     fetch("https://api.cloudinary.com/v1_1/dplappado/image/upload",{
       method : "post",
       body: data,
      }).then(res => res.json())
        .then(data => {
+        console.warn(data);
              setPhotoName(data.url);
           }).catch((err) => {
               console.log(err)
@@ -57,8 +58,8 @@ function Create() {
           ImagePicker.launchImageLibrary(options,(response) => {
             if(response.didCancel !== true)
             { 
-                if (response.didCancel !== true) {
                     setPhoto(response.assets[0].uri);
+                    console.log(response.assets[0].uri);
                 
                 
                 let newFile = {
@@ -68,7 +69,6 @@ function Create() {
                 };
 
                 handleUploadImage(response);
-                }
             }else if (response.error) {
               console.log('ImagePicker Error: ', response.error);
              }else if (response.customButton) {
@@ -87,7 +87,6 @@ function Create() {
     }
     const pull_voice = async (data) => {
     
-
       const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
       
       const fd = new FormData();
@@ -125,12 +124,7 @@ function Create() {
         'Accept': 'application/json',
         'Content-Type': 'multipart/form-data',
                  },
-        body:JSON.stringify({
-          imgURL:photo,
-          audioURL:voiceName,
-          categoryName:categoryName,
-          subCategoryName:subCategoryName
-        }) 
+        body:data
        }
        console.log("CONFIG -> ",config);
        fetch(serverIP+"storeData", config)

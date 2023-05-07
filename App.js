@@ -12,6 +12,7 @@ import Home from './Pages/Home';
 import StartScreen from './src/screens/StartScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import Guest from './Pages/Guest';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import Create from './Pages/Create';
 import Category from './Pages/Category';
@@ -30,6 +31,7 @@ import Assessment from './Pages/Assessment';
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import DeleteCategory from './Pages/DeleteCategory';
+import Voice2 from './Pages/Voice2';
 
  
 const Stack = createNativeStackNavigator();
@@ -44,6 +46,7 @@ function App(){
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="Guest" component={Guest} />
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Create" component={Create} /> 
@@ -59,6 +62,7 @@ function App(){
           <Stack.Screen name="SubUpdate" component={SubUpdate} />
           <Stack.Screen name="ChooseOptions" component={ChooseOptions} />
           <Stack.Screen name="Voice1" component={Voice1} />
+          <Stack.Screen name="Voice2" component={Voice2} />
           <Stack.Screen name="Assessment" component={Assessment} />
         </Stack.Navigator>
       </NavigationContainer> 

@@ -154,6 +154,14 @@ app.get('/getCategory',function(req,res) {
     
 })
 
+app.get('/records',function(req,res){
+    pool.query('select * from records',function(err,results,field){
+        if(err)
+           throw err;
+        console.log("results of records= ",results);
+        res.send(results);
+    })
+})
 app.get('/getSubData',function(req,res) {
     console.log("IN sub data request ");
     pool.query('select * from subCategory ',function(err,results,field) {

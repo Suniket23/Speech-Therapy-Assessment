@@ -15,7 +15,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import MIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import { Button } from "native-base";
 
 

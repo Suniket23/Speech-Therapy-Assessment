@@ -24,9 +24,16 @@ export default function StartScreen({ navigation }) {
       </Button>
       <Button
         mode="outlined"
-        onPress={() => navigation.navigate('User')}
+        onPress={() => navigation.navigate('RegisterScreen')}
       >
         Sign Up
+      </Button>
+
+      <Button
+        mode="outlined"
+        onPress={() => navigation.navigate('Guest')}
+      >
+        Guest
       </Button>
     </Background>
   )

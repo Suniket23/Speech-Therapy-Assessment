@@ -36,7 +36,7 @@ function Display(props){
     const [imageURL,setImageURL] = useState();
     const [audioURL,setAudioURL] = useState();
     const [objData,setObjData] = useState();
-    const serverIP = "http://192.168.43.13:3001/";
+    const serverIP = "http://192.168.1.7:3001/";
     const data = new FormData();
     data.append("category",category);
     data.append("subCategory",subCategory);
