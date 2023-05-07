@@ -37,7 +37,7 @@ function Create() {
         data.append("upload_preset", "fluencyApp");
                 
        
-     fetch("https://api.cloudinary.com/v1_1/dplappado/image/upload",{
+     fetch("https://api.cloudinary.com/v1_1/dplappado/image/upload/",{
       method : "post",
       body: data,
      }).then(res => res.json())

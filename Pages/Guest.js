@@ -29,7 +29,12 @@ const Guest=()=>{
               />
             </View>
             <View style={styles.dataContainer}>
-              <Text>{item.audioURL}</Text>
+              <Button
+              onPress={()=>{item.audioURL}}
+              title="Learn More"
+              color="#841584"
+              />
+              {/* <Text>{item.audioURL}</Text> */}
               {/* <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.imageURL} </Text> */}
             </View>
           </View>
@@ -38,7 +43,7 @@ const Guest=()=>{
     return (
             <View style={styles.mainContainer}>
              {/* <Text style={{color:"black"}}>hello guys</Text> */}
-              {data && <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />}
+              {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.id.toString()} />}
             </View>
     )
 }

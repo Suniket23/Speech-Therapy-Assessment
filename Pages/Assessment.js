@@ -9,7 +9,7 @@ import { json } from "body-parser";
 import * as ImagePicker from "react-native-image-picker";
 var RNFS = require('react-native-fs');
 import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-const serverIP = "http://192.168.1.6:3001/";
+const serverIP = "http://192.168.1.7:3001/";
 // import TextInput from "../src/components/TextInput";
 
 const Assessment=()=>{
@@ -20,19 +20,11 @@ const Assessment=()=>{
     // const [Option3,setOption3]=useState("");
     const [CorrectOption,setCorrectOption]=useState("");
     const [Info,setInfo]=useState({});
-    const [photo1,setPhoto1] = useState(null);
-    const [photo2,setPhoto2] = useState(null);
-    const [photo3,setPhoto3] = useState(null);
+    const [photo1,setPhoto1] = useState("");
+    const [photo2,setPhoto2] = useState("");
+    const [photo3,setPhoto3] = useState("");
     const [photoName,setPhotoName] = useState("");
-    // const onTextChange1 = (txt) => {
-    //   setOption1(txt);
-    // }
-    // const onTextChange2= (txt) => {
-    //   setOption2(txt);
-    // }
-    // const onTextChange3 = (txt) => {
-    //   setOption3(txt);
-    // }
+   
     const onTextChange4 = (txt) => {
       setCorrectOption(txt);
     }
@@ -49,10 +41,14 @@ const Assessment=()=>{
     body: data,
    }).then(res => res.json())
      .then(data => {
-      console.log(data);
-          //  setPhotoName(data.url);
+      console.log("results of assessment=",data);
+      // console.log(data.url);
+            if(photo1==="")setPhoto1(data.url);
+            else if(photo2==="")setPhoto2(data.url);
+            else if(photo3==="")setPhoto3(data.url);
+            console.log("photo1=",photo1);
         }).catch((err) => {
-            console.log(err)
+            console.log("error=",err)
         })
   }
     const handleChooseImage = () => {
@@ -66,18 +62,14 @@ const Assessment=()=>{
           if(response.didCancel !== true)
           { 
               if (response.didCancel !== true) {
-                if(photo1===null)setPhoto1(response.assets[0].uri);
-                else if(photo2===null)setPhoto2(response.assets[0].uri);
-                else if(photo3===null)setPhoto3(response.assets[0].uri);
+
               
                 let newFile = {
                   uri : response.assets[0].uri,
                   type : response.assets[0].type,
                   name : response.assets[0].name
                 };
-                console.log(photo1);
-                console.log(photo2);
-
+              
                 handleUploadImage(response);
               }
           }else if (response.error) {
@@ -99,7 +91,7 @@ const Assessment=()=>{
       fd.append("cloud_name","dplappado");
       fd.append("resource_type", "video");
 
-      fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
+      fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload/Create', {
         method: 'POST',
         body: fd
       }).then(res => res.json())
@@ -116,7 +108,7 @@ const Assessment=()=>{
         const data={photo1,photo2,photo3,CorrectOption};
         setInfo(data);
         // alert(Option1);
-        fetch('http://192.168.1.6:3001/Assessment', {
+        fetch('http://192.168.1.7:3001/Assessment', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -156,13 +148,13 @@ const Assessment=()=>{
             <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12,color:"white"}}> Choose ऑडिओ  </Text>
             </Button>
               <Button w={250} style={{paddingHorizontal: 100,marginVertical:10}} colorScheme="blueGray" startIcon={<Icon name="camera" size={18} color="#FFF"/>} onPress={handleChooseImage}>
-                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">{photo1===null?"Choose फोटो 1":"uploaded"}</Text>
+                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white">{photo1===""?"Choose फोटो 1":"uploaded"}</Text>
               </Button>
               <Button w={250} style={{paddingHorizontal: 100,marginVertical:10}} colorScheme="blueGray" startIcon={<Icon name="camera" size={18} color="#FFF"/>} onPress={handleChooseImage}>
-                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> {photo2===null?"Choose फोटो 2":"uploaded"} </Text>
+                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> {photo2===""?"Choose फोटो 2":"uploaded"} </Text>
               </Button>
               <Button w={250} style={{paddingHorizontal: 100,marginVertical:10}} colorScheme="blueGray" startIcon={<Icon name="camera" size={18} color="#FFF"/>} onPress={handleChooseImage}>
-                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> {photo3===null?"Choose फोटो 3":"uploaded"}  </Text>
+                 <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 12}}  color="white"> {photo3===""?"Choose फोटो 3":"uploaded"}  </Text>
               </Button>
 
               <TextInput

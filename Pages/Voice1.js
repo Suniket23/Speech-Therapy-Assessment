@@ -57,6 +57,7 @@ export class Voice1 extends Component {
   start = () => {
     console.log('start record');
     this.setState({ audioFile: '', recording: true});
+    this.componentDidMount()
     AudioRecord.start();
   };
 

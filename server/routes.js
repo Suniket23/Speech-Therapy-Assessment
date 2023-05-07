@@ -121,7 +121,7 @@ app.get('/assessment',function(req,res){
 })
 app.post('/assessment',function(req,res){
     const {option1,option2,option3,correct_option}=req.body;
-    console.log(req.body);
+    console.log("option1=",req.body);
     // const {Option1,Option2,Option3,CorrectOption}=Info;
     const sql = `INSERT INTO assessment (option1, option2, option3, correct_option) VALUES (?, ?, ?, ?)`;
     pool.query(sql, [option1, option2, option3, correct_option], (error, res) => {
