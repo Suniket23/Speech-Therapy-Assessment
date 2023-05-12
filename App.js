@@ -27,6 +27,8 @@ import Update from './Pages/Update';
 import SubUpdate from './Pages/SubUpdate';
 import ChooseOptions from './Pages/ChooseOptions';
 import Assessment from './Pages/Assessment';
+import TakeAssess from "./Pages/TakeAssess";
+import Quiz from "./Pages/Quiz";
 
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
@@ -47,6 +49,8 @@ function App(){
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="Guest" component={Guest} />
+          <Stack.Screen name="TakeAssess" component={TakeAssess} />
+          <Stack.Screen name="Quiz" component={Quiz} />
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Create" component={Create} /> 
@@ -75,8 +79,7 @@ const styles = StyleSheet.create({
   container : {
     flex:1,
     alignContent:'center',
-    justifyContent:'center',
-     
+    justifyContent:'center'
   },
  
  

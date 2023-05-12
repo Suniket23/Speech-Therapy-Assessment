@@ -108,7 +108,7 @@ const Assessment=()=>{
         const data={photo1,photo2,photo3,CorrectOption};
         setInfo(data);
         // alert(Option1);
-        fetch('http://192.168.1.7:3001/Assessment', {
+        fetch('http://192.168.1.3:3001/Assessment', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

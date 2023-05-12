@@ -6,6 +6,7 @@ const cors = require('cors');
 var fs = require('fs');
 var multer = require('multer');
 var util = require('util');
+// import { Alert } from 'react-native';
 // const { err } = require('react-native-svg/lib/typescript/xml');
 
 var con = mysql.createConnection({
@@ -133,6 +134,26 @@ app.post('/assessment',function(req,res){
         //   res.send('User inserted successfully');
         // }
     });
+})
+app.post('/TakeAssess',function(req,res){
+    const {iduser,name}=req.body;
+    console.log("iduser=",iduser);
+    const sql = `INSERT INTO user (iduser,name) VALUES (?, ?)`;
+    pool.query(sql, [iduser,name], (error, res) => {
+        if (error) {
+          console.error(error);
+        //   res.status(500).send('Error inserting user');
+        // Alert("error while inserting user");
+        }
+    });
+})
+app.get('/TakeAssess',function(req,res){
+    pool.query('select * from user',function(err,results,field) {
+        if(err)
+            throw err;
+        console.log("results of user = ",results);
+        res.send(results);
+    })
 })
 
 app.get('/getInfo',function(req,res){

@@ -1,11 +1,13 @@
 import { Button, Center,FlatList,Image } from "native-base";
 import React, { useEffect, useState } from "react";
-import {View,Text,StyleSheet,TextInput,textStyle} from "react-native";
+import {View,Text,StyleSheet,TextInput,textStyle, TouchableOpacity} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeBaseProvider,  VStack} from "native-base";
-
+import Sound from 'react-native-sound';
+import {useNavigation} from "@react-navigation/native";
 const Guest=()=>{
-    const serverIP = "http://192.168.1.7:3001/";
+    const navigation = useNavigation();
+    const serverIP = "http://192.168.1.18:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        
@@ -17,8 +19,19 @@ const Guest=()=>{
     useEffect(() => {
         getData();
     },[])
+
+    const playSound = (item) => {
+        sound1 = new Sound(item.audioURL,'', (error, _sound) => {
+          if (error) {
+            alert('error' + error.message);
+            return;
+          }
+          sound1.play(() => {
+            sound1.release();
+          });
+        });
+      }
     const renderItem = ({item}) =>{
-      
         return(
           <View style={styles.card}>
             <View style={styles.imgContainer}>
@@ -26,14 +39,13 @@ const Guest=()=>{
               style={styles.imgStyle}
               resizeMode="cover"
               source={{uri:item.imageURL}}
+              alt="img1"
               />
             </View>
             <View style={styles.dataContainer}>
-              <Button
-              onPress={()=>{item.audioURL}}
-              title="Learn More"
-              color="#841584"
-              />
+            <TouchableOpacity onPress={() => playSound(item)}>
+              <Text style={styles.buttonPlay}>Play</Text>
+            </TouchableOpacity>
               {/* <Text>{item.audioURL}</Text> */}
               {/* <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.imageURL} </Text> */}
             </View>
@@ -42,7 +54,10 @@ const Guest=()=>{
       }
     return (
             <View style={styles.mainContainer}>
-             {/* <Text style={{color:"black"}}>hello guys</Text> */}
+             {/* <Text style={{color:"black"}}>Take assessment</Text> */}
+             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('TakeAssess')}>
+              <Text style={styles.appButtonText}>Give assessment</Text>
+             </TouchableOpacity>
               {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.id.toString()} />}
             </View>
     )
@@ -85,6 +100,30 @@ const styles=StyleSheet.create({
     display:"flex",
     justifyContent:"center",
     alignItems:"center",
+  },
+  buttonPlay: {
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: 'rgba(00,80,00,1)',
+    borderWidth: 1,
+    borderColor: 'rgba(80,80,80,0.5)',
+    overflow: 'hidden',
+    paddingHorizontal: 15,
+    paddingVertical: 7,
+  },
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
   }
 })
 export default Guest;
