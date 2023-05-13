@@ -6,6 +6,7 @@ const cors = require('cors');
 var fs = require('fs');
 var multer = require('multer');
 var util = require('util');
+const { log } = require('console');
 // import { Alert } from 'react-native';
 // const { err } = require('react-native-svg/lib/typescript/xml');
 
@@ -147,6 +148,19 @@ app.post('/TakeAssess',function(req,res){
         }
     });
 })
+// app.post('/Quiz',function(req,res){
+//     const {marks,iduser}=req.body;
+//     console.log("marks=",marks);
+//     const sql = `UPDATE user SET marks=? where iduser=?`;
+//     pool.query(sql, [marks,iduser], (error, res) => {
+//         if (error) {
+//           console.error(error);
+//         //   res.status(500).send('Error inserting user');
+//         // Alert("error while inserting user");
+//         }
+//     });
+
+// })
 app.get('/TakeAssess',function(req,res){
     pool.query('select * from user',function(err,results,field) {
         if(err)

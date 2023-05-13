@@ -49,19 +49,19 @@ const TakeAssess=()=>{
         navigation.navigate('Quiz')
       }
     return (
-        <View>
+        <View style={{flex:1}}>
             <Text style={styles.heading}>
-                welcome to assessment
+                Welcome to Assessment
             </Text>
             <TextInput
             style={styles.input}
-            placeholder='enter your Number'
+            placeholder='Enter your Number'
             value={Phoneno}
             onChangeText={(text) => onPhonenoChange(text)}
             />
             <TextInput
             style={styles.input}
-            placeholder='enter your Name'
+            placeholder='Enter your Name'
             value={Name}
             onChangeText={(text) => onNameChange(text)}
             />
@@ -80,11 +80,11 @@ const styles=StyleSheet.create({
     },
     heading:{
         marginLeft:100,
-        marginRight:100,
+        // marginRight:100,
         marginTop:50,
-        fontSize:15,
+        fontSize:20,
         borderColor:"black",
-        height:60
+        // height:60
     },
     btn:{
         marginBottom:8,
@@ -92,7 +92,7 @@ const styles=StyleSheet.create({
     },
     input:{
         borderColor:"black",
-        marginTop:20,
+        marginTop:30,
         paddingHorizontal: 100,
         marginVertical:15,
         marginLeft:20,
@@ -101,7 +101,7 @@ const styles=StyleSheet.create({
     buttonPlay: {
         fontSize: 16,
         color: 'white',
-        backgroundColor: 'rgba(00,80,00,1)',
+        backgroundColor:"#90EE90",
         borderWidth: 1,
         borderColor: 'rgba(80,80,80,0.5)',
         overflow: 'hidden',

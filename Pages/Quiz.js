@@ -1,184 +1,290 @@
-import { Button, Center,FlatList,Image } from "native-base";
-import React, { useEffect, useState } from "react";
-import {View,Text,StyleSheet,TextInput,textStyle, TouchableOpacity, Dimensions} from "react-native";
+// import { Button, Center,FlatList,Image } from "native-base";
+// import React, { useEffect, useState } from "react";
+// import {View,Text,StyleSheet,TextInput,textStyle, TouchableOpacity, Dimensions} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeBaseProvider,  VStack} from "native-base";
-import Sound from 'react-native-sound';
-const {height,width}=Dimensions.addEventListener
+// import Sound from 'react-native-sound';
+// const {height,width}=Dimensions.addEventListener
 import {useNavigation} from "@react-navigation/native";
-
-const Quiz=()=>{
-    const navigation = useNavigation();
-    const serverIP = "http://192.168.1.18:3001/";
-    const [data,setData] = useState([]);
-    const [currindex,setcurrindex]=useState(1);
-    const [marks,setmarks]=useState(0);
-    const [flag1,setflag1]=useState(0);
-    const [flag2,setflag2]=useState(0);
-    const [flag3,setflag3]=useState(0);
-    const [i,seti]=useState(0);
-    const getData = async() => {
+import {Phoneno} from "./TakeAssess";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+  Modal,
+} from 'react-native';
+import { useEffect } from 'react';
+import React, {useRef, useState} from 'react';
+import {englishData} from './EnglishQuestions';
+import QuestionItem from './QuestionItem';
+const {height, width} = Dimensions.get('window');
+const App = () => {
+  const serverIP = "http://192.168.1.18:3001/";
+  const [currentIndex, setCurrentIndex] = useState(1);
+  // const [questions, setQuestions] = useState(englishData);
+  const listRef = useRef();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [data,setData]=useState([]);
+  const getData = async() => {
        
-        fetch(serverIP + 'Assessment')
-        .then(response => response.json())
-        .then(results => {setData(results);console.log("results = ",results);});
-    }
-    useEffect(() => {
-      // console.warn("render",i)
-        getData();
-    },[])
+            fetch(serverIP + 'Assessment')
+            .then(response => response.json())
+            .then(results => {setData(results);console.log("results = ",results);});
+        }
+        useEffect(() => {
+          // console.warn("render",i)
+            getData();
+        },[])
 
-    const submit=()=>{
-      if(flag1===1){
-        if(option1===data.correct_option){
-          setmarks(marks+1);
+  const OnSelectOption = (index, x) => {
+    console.log("index=",index);
+    console.log("x=",x);
+    const tempData = data;
+    console.log("temp=",temp);
+    tempData.map((item, ind) => {
+      if (index == ind) {
+        if (item.marked !== -1) {
+          item.marked = -1;
+        } else {
+          item.marked = x;
         }
       }
-    }
-    const onchoose1=()=>{
-      if(flag2===1){setflag2(0)};
-      if(flag3===1){setflag3(0)};
-        setflag1(1);
-
-        console.log(flag1);
-    };
-    const onchoose2=()=>{
-      if(flag3===1){setflag3(0)};
-      if(flag1===1){setflag1(0)};
-        setflag2(1);
-        console.log(flag1);
-    };
-    const onchoose3=()=>{
-      if(flag1===1){setflag1(0)};
-      if(flag2===1){setflag2(0)};
-        setflag3(1);
-        console.log(flag1);
-    };
-
-    const playSound = (item) => {
-      sound1 = new Sound(item.audio,'', (error, _sound) => {
-        if (error) {
-          alert('error' + error.message);
-          return;
+    });
+    let temp = [];
+    tempData.map(item => {
+      temp.push(item);
+    });
+    setData(temp);
+  };
+  const getTextScore = () => {
+    let marks = 0;
+    data.map(item => {
+      if (item.marked !== -1) {
+        if(item.marked==item.correct_option){
+        marks = marks + 5;
         }
-        sound1.play(() => {
-          sound1.release();
-        });
-      });
-    }
-    const renderItem = ({item}) =>{
-      // setflag(false)
-      return(
-        <View style={styles.card}>
-          <TouchableOpacity style={{justifyContent:"center"}} onPress={() => playSound(item)}>
-              <Text style={styles.buttonPlay}>Play</Text>
-          </TouchableOpacity>
-          <View style={{marginTop:10}}>
-            <TouchableOpacity style={[styles.card1,{backgroundColor:flag1===1?'red':'#fff'}]} onPress={onchoose1}>
-              <Image
-                style={styles.imgStyle}
-                resizeMode="cover"
-                source={{uri:item.option1}}
-                alt="image"
-                />
-                {/* <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 15,
-                    backgroundColor: data.marked ==  1 ? '#fff' : 'cyan',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text style={{fontWeight: '600', color: '#000'}}>
-                    A
-                  </Text>
-                </View> */}
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.card1,{backgroundColor:flag2===1?'red':'#fff'}]} onPress={onchoose2}>
-              <Image
-                style={styles.imgStyle}
-                resizeMode="cover"
-                source={{uri:item.option2}}
-                alt="image"
-                />
-              </TouchableOpacity>
-            <TouchableOpacity style={[styles.card1,{backgroundColor:flag3===1?'red':'#fff'}]} onPress={onchoose3}>
-            <Image
-              style={styles.imgStyle}
-              resizeMode="cover"
-              source={{uri:item.option3}}
-              alt="image"
-              />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.buttonPlay} onPress={submit}>
-              <Text style={{fontWeight:"bold",marginLeft:100}}>Next</Text>
-           </TouchableOpacity>
-        </View>
-      );
-    }
-    return (
-        <View style={{flex:1}}>
-          <Text style={{
+      }
+    });
+    // fetch('http://192.168.1.18:3001/Quiz', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     marks:marks,
+    //     iduser:Phoneno
+    //   })
+    // }).then(response => response.json())
+    //   .then(json=>console.log(json))
+    //   .catch(error => console.error(error))
+    return marks;
+  };
+  const reset = () => {
+    const tempData = data;
+    tempData.map((item, ind) => {
+      item.marked = -1;
+    });
+    let temp = [];
+    tempData.map(item => {
+      temp.push(item);
+    });
+    setData(temp);
+  };
+  return (
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: 20,
+        }}>
+        <Text
+          style={{
             fontSize: 20,
             fontWeight: '600',
+
             marginLeft: 20,
             color: '#000',
-            marginTop:20}}>Total Questions:{' '+currindex+'/'+data.length}</Text>
-            <View style={{marginTop:10}}>
-            <FlatList pagingEnabled data={data} renderItem={renderItem} horizontal showsVerticalScrollIndicator={false} keyExtractor={(item) => item.id} />
-            </View>
-           {/* <TouchableOpacity style={styles.buttonPlay} onPress={submit}>
-              <Text style={{fontWeight:"bold",marginLeft:100}}>Next</Text>
-           </TouchableOpacity> */}
+          }}>
+          Total Questions:{' ' + currentIndex + '/' + data.length}
+        </Text>
+        <Text
+          style={{
+            marginRight: 20,
+            fontSize: 20,
+            fontWeight: '600',
+            color: 'black',
+          }}
+          onPress={() => {
+            reset();
+            listRef.current.scrollToIndex({animated: true, index: 0});
+          }}>
+          Reset
+        </Text>
+      </View>
+      <View style={{marginTop: 10}}>
+        <FlatList
+          ref={listRef}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          horizontal
+          onScroll={e => {
+            const x = e.nativeEvent.contentOffset.x / width + 1;
+            setCurrentIndex(x.toFixed(0));
+          }}
+          data={data}
+          renderItem={({item, index}) => {
+            return (
+              <QuestionItem
+                data={item}
+                selectedOption={x => {
+                  OnSelectOption(index, x);
+                }}
+              />
+            );
+          }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 50,
+          width: '100%',
+        }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: currentIndex > 1 ? 'purple' : 'gray',
+            height: 50,
+            width: 100,
+            borderRadius: 10,
+            marginLeft: 20,
+            marginBottom:-20,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={() => {
+            console.log(parseInt(currentIndex) - 1);
+            if (currentIndex > 1) {
+              listRef.current.scrollToIndex({
+                animated: true,
+                index: parseInt(currentIndex) - 2,
+              });
+            }
+          }}>
+          <Text style={{color: '#fff'}}>Previous</Text>
+        </TouchableOpacity>
+        {currentIndex == data.length ? (
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'green',
+              height: 50,
+              width: 100,
+              borderRadius: 10,
+              marginBottom:-20,
+              marginRight: 20,
+  
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              setModalVisible(true);
+            }}>
+            <Text style={{color: '#fff'}}>Submit</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'purple',
+              height: 50,
+              width: 100,
+              borderRadius: 10,
+              marginRight: 20,
+              marginBottom:-20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              console.log(currentIndex);
+              if (data[currentIndex - 1].marked !== -1) {
+                if (currentIndex < data.length) {
+                  listRef.current.scrollToIndex({
+                    animated: true,
+                    index: currentIndex,
+                  });
+                }
+              }
+            }}>
+            <Text style={{color: '#fff'}}>Next</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: '#fff',
+              width: '90%',
+              borderRadius: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: '800',
+                alignSelf: 'center',
+                marginTop: 20,
+                color:"black"
+              }}>
+               Score
+            </Text>
+            <Text
+              style={{
+                fontSize: 40,
+                fontWeight: '800',
+                alignSelf: 'center',
+                marginTop: 20,
+                color: 'green',
+              }}>
+              {getTextScore()}
+            </Text>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                height: 40,
+                padding: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+                marginTop: 20,
+                marginBottom: 20,
+              }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={{color:"green"}}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-    )
-}
-
-const styles=StyleSheet.create({
-    buttonPlay: {
-        fontSize: 16,
-        color: 'white',
-        backgroundColor: 'rgba(00,80,00,1)',
-        borderWidth: 1,
-        borderColor: 'rgba(80,80,80,0.5)',
-        overflow: 'hidden',
-        paddingHorizontal: 15,
-        paddingVertical: 7,
-        marginLeft:50,
-        marginRight:50,
-        marginTop:10
-      },
-      card:{
-        width:300,
-        // backgroundColor:"#fff",
-        borderRadius:5,
-        marginVertical:0,
-        // display:"flex",
-        flexDirection:"column",
-        // justifyContent:"space-between",
-        marginLeft:50,
-        marginRight:50
-        // justifyContent:"center"
-      },
-      card1:{
-        // width:'90%',
-        // height:50,
-        elevation:3,
-        backgroundColor:'#fff',
-        marginTop:10,
-        marginBottom:10,
-        // alignSelf:"center"
-      },
-      imgContainer:{
-        padding:10,
-      },
-      imgStyle:{
-        width:"90%",
-        height:150,
-        borderColor:"black",
-        margin:8,
-      }
-})
-export default Quiz;
+      </Modal>
+    </View>
+  );
+};
+export default App;
