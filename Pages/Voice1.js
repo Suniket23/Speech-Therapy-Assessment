@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, PermissionsAndroid } from 'react-native';
 import { Buffer } from 'buffer';
 import Permissions from 'react-native-permissions';
+import Sound from "react-native-sound";
 import Video from 'react-native-video';
 import AudioRecord from 'react-native-audio-record';
 import { Title } from 'react-native-paper';
 import * as RNFS from 'react-native-fs';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 export class Voice1 extends Component {
     constructor(props)
@@ -43,21 +45,31 @@ export class Voice1 extends Component {
   }
 
   checkPermission = async () => {
+    const granted=await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      {
+        title:"fluency app",
+        message:"app needs access to your camera",
+        buttonNeutral:"ask me later",
+        buttonNegative:"cancel",
+        buttonPositive:"ok"
+      }
+    );
+
     const p = await Permissions.check('microphone');
-    // console.log('permission check', p);
+    console.log('permission check', p);
     if (p === 'authorized') return;
     return this.requestPermission();
   };
 
   requestPermission = async () => {
     const p = await Permissions.request('microphone');
-    // console.log('permission request', p);
+    console.log('permission request', p);
   };
 
   start = () => {
     console.log('start record');
-    this.setState({ audioFile: '', recording: true});
-    this.componentDidMount()
+    this.setState({ audioFile: '', recording: true,loaded:false});
     AudioRecord.start();
   };
 
@@ -71,12 +83,28 @@ export class Voice1 extends Component {
     setTimeout(() => {
       this.setState({ audioFile });
     }, 1000);
-   
- 
     this.props.route.params.onGoBack(audioFile);
   };
 
-  play = () => {
+  load=()=>{
+    return new Promise((resolve,reject)=>{
+      if(!this.state.audioFile){
+        return reject('file path is empty');
+      }
+
+      this.sound=new Sound(this.state.audioFile,'',error=>{
+        if(error){
+          console.log("failed to load the file",error);
+          return reject(error);
+        }
+        this.setState({loaded:true});
+        return resolve;
+      });
+
+    });
+  };
+
+  play = async() => {
     if (!this.state.loaded) this.player.seek(0);
     this.setState({ paused: false, loaded: true });
   };

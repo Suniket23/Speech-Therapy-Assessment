@@ -86,10 +86,12 @@ function Create() {
       setSubCategoryName(data.subTitle);
     }
     const pull_voice = async (data) => {
+      try{
     
       const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
       
       const fd = new FormData();
+      console.log("tempdata=",tempData);
       fd.append("file","data:audio/mpeg;base64,"+tempData);
       fd.append("upload_preset", "fluencyApp");
       fd.append("cloud_name","dplappado");
@@ -105,6 +107,9 @@ function Create() {
          }).catch((err) => {
              console.log(err)
          })
+        }catch(error){
+          console.log("error=",error);
+        }
      
     }
 

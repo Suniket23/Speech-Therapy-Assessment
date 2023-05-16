@@ -100,10 +100,10 @@ app.get('/storeData',function(req,res){
     })
 })
 app.post('/storeData',function(req,res){
-    const {photo,voiceName,categoryName,subCategoryName}=req.body;
-    console.log(req.body);
+    const {imageName,audioName,category,subCategory}=req.body;
+    console.log("reqbody=",req.body);
     const sql = `INSERT INTO records (imageURL,audioURL,categoryName,subCategoryName) VALUES (?, ?, ?, ?)`;
-    pool.query(sql, [photo,voiceName,categoryName,subCategoryName], (error, res) => {
+    pool.query(sql, [imageName,audioName,category,subCategory], (error, res) => {
         if (error) {
           console.error(error);
           res.status(500).send('Error inserting user');
@@ -121,15 +121,15 @@ app.get('/assessment',function(req,res){
         res.send(results);
     })
 })
-app.post('/assessment',function(req,res){
-    const {option1,option2,option3,correct_option}=req.body;
+app.post('/Assessment',function(req,res){
+    const {audio,option1,option2,option3,correct_option}=req.body;
     console.log("option1=",req.body);
     // const {Option1,Option2,Option3,CorrectOption}=Info;
-    const sql = `INSERT INTO assessment (option1, option2, option3, correct_option) VALUES (?, ?, ?, ?)`;
-    pool.query(sql, [option1, option2, option3, correct_option], (error, res) => {
+    const sql = `INSERT INTO assessment (audio,option1, option2, option3, correct_option) VALUES (?, ?, ?, ?, ?)`;
+    pool.query(sql, [audio,option1, option2, option3, correct_option], (error, res) => {
         if (error) {
           console.error(error);
-          res.status(500).send('Error inserting user');
+        //   res.status(500).send('Error inserting user');
         }
         //  else {
         //   res.send('User inserted successfully');
