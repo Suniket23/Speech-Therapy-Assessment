@@ -18,7 +18,7 @@ function Category(props) {
   const [data,setData] = useState([]); 
   const [subData,setSubData] = useState([]); 
   const obj = {title : "",subTitle : ""};
-  const serverIP = "http://192.168.1.3:3001/";
+  const serverIP = "http://192.168.63.91:3001/";
   const onTextChange = (txt) => {
     setText(txt);
   }
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
       // marginHorizontal:15,
       flex:1,
       alignContent:'center',
-      justifyContent:'center'
+      justifyContent:'center',
     },
     containerType : {
         flex:1,

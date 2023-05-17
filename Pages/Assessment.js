@@ -80,35 +80,63 @@ const Assessment=()=>{
         }); 
      }
 
-     const pull_voice = async (data) => {
+    //  const pull_voice = async (data) => {
     
+    //   const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
+    //   // console.log("temp=",tempData);
+    //   const fd = new FormData();
+    //   fd.append("file","data:audio/mpeg;base64,"+tempData);
+    //   fd.append("upload_preset", "fluencyApp");
+    //   fd.append("cloud_name","dplappado");
+    //   fd.append("resource_type", "video");
+    //   console.log("fd=",fd);
 
-      const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
-      
-      const fd = new FormData();
-      fd.append("file","data:audio/mpeg;base64,"+tempData);
-      fd.append("upload_preset", "fluencyApp");
-      fd.append("cloud_name","dplappado");
-      fd.append("resource_type", "video");
-
-      fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload/Create', {
-        method: 'POST',
-        body:fd
-      }).then(res => res.json())
-      .then(data => {
-            setaudio(data.url);
-            console.log("DATA Recieved = ",data);
-         }).catch((err) => {
-             console.log(err)
-         })
+    //   fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
+    //     method: 'POST',
+    //     body:fd
+    //   }).then(res => res.json())
+    //   .then(data => {
+    //         setaudio(data.url);
+    //         console.log("DATA Recieved = ",data);
+    //      }).catch((err) => {
+    //          console.log(err)
+    //      })
      
-    }
+    // }
+    const pull_voice = async (data) => {
+      try {
+        const tempData = await RNFS.readFile(data.toString(), 'base64');
+        const fd = new FormData();
+        fd.append('file', `data:audio/mpeg;base64,${tempData}`);
+        fd.append('upload_preset', 'fluencyApp');
+        fd.append('cloud_name', 'dplappado');
+        fd.append('resource_type', 'auto');
+    
+        const response = await fetch(
+          'https://api.cloudinary.com/v1_1/dplappado/video/upload',
+          {
+            method: 'POST',
+            body: fd
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Failed to upload audio');
+        }
+        const responseData = await response.json();
+        setaudio(responseData.url);
+        console.log('DATA Received = ', responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
 
       const onSubmit =async()=>{
         const data={audio,photo1,photo2,photo3,CorrectOption};
         setInfo(data);
+        console.log("audio=",audio);
         // alert(Option1);
-        fetch('http://192.168.1.3:3001/Assessment', {
+        fetch('http://192.168.63.91:3001/Assessment', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
