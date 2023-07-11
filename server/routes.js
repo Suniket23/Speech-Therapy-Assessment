@@ -1,50 +1,56 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
+// const mysql = require('mysql2');
 const morgan = require('morgan');
 const cors = require('cors');
 var fs = require('fs');
 var multer = require('multer');
 var util = require('util');
 const { log } = require('console');
+const { json } = require('sequelize');
 // import { Alert } from 'react-native';
 // const { err } = require('react-native-svg/lib/typescript/xml');
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-var con = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'Pastaway$33',
-    database:'main'
-});
+// const { MongoClient, ServerApiVersion } = require('mongodb');
 
-con.connect(function(err){
-    if(err) throw err;
-    else console.log("connected!");
-});
+// const uri = "mongodb+srv://fluency:Pastaway33@cluster0.cf22whd.mongodb.net/?retryWrites=true&w=majority";
+
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
+
+// async function run() {
+//   try {
+//     // Connect the client to the server	(optional starting in v4.7)
+//     await client.connect();
+//     // Send a ping to confirm a successful connection
+//     await client.db("main").command({ ping: 1 });
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     await client.close();
+//   }
+// }
+// run().catch(console.dir);
 
 
 var upload1 = multer();
-
-// const connection = mysql.createPool({
-//     host:'localhost',
-//     user:'root',
-//     password:'toor',
-//     database:'main'
-// })
 
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
     password:'Pastaway$33',
     database:'main'
-})
-
-
-
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-var urlencodedParser = bodyParser.urlencoded({ extended: false })  
+})  
 
 
 app.use(cors());
@@ -63,7 +69,6 @@ pool.getConnection((err, connection) => {
         console.error('Database connection was refused.')
       }
     }
-  
     if (connection) connection.release()
   
     return
@@ -194,6 +199,29 @@ app.get('/records',function(req,res){
         if(err)
            throw err;
         console.log("results of records= ",results);
+        res.send(results);
+    })
+})
+
+app.get('/sign_in',function(req,res){
+    pool.query('select * from sign_in',function(err,results,field){
+        if(err)
+           throw err;
+        console.log("results of sign_in= ",results);
+        res.send(results);
+    })
+})
+
+app.post('/Register',function(req,res){
+    const obj=req.body;
+    console.log(req);
+    var sql = "INSERT INTO sign_in (email,password,name) VALUES ?";
+    var values=[[obj.email.value,obj.password.value,obj.name.value]]
+    pool.query(sql,[values],function(err,results){
+        if(err)
+           throw err;
+
+        console.log("result of register=",results);
         res.send(results);
     })
 })

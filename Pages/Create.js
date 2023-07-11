@@ -22,7 +22,7 @@ function Create() {
     const [categoryName,setCategoryName] = useState("");
     const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
-    const serverIP = "http://192.168.63.91:3001/";
+    const serverIP = "http://192.168.1.2:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });

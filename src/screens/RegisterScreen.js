@@ -11,6 +11,8 @@ import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
+import { json } from 'body-parser'
+import { response } from 'express'
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
@@ -27,15 +29,37 @@ export default function RegisterScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
+    else{
+      fetch('http://192.168.1.4:3001/Register',{
+        method:'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({
+          email:email,
+          password:password,
+          name:name,
+        })
+      })
+      .then(response=>response.json())
+      .then(Register=>{
+        console.log(Register);
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      })
+    }
   }
 
   return (
     <Background>
-      <BackButton goBack={navigation.goBack} />
+      {/* <BackButton goBack={navigation.goBack} /> */}
       <Logo />
       <Header>Create Account</Header>
       <TextInput
