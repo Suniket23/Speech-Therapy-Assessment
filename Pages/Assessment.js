@@ -9,7 +9,7 @@ import { json } from "body-parser";
 import * as ImagePicker from "react-native-image-picker";
 var RNFS = require('react-native-fs');
 import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-const serverIP = "http://192.168.1.2:3001/";
+const serverIP = "http://192.168.1.3:3001/";
 // import TextInput from "../src/components/TextInput";
 
 const Assessment=()=>{
@@ -136,7 +136,7 @@ const Assessment=()=>{
         setInfo(data);
         console.log("audio=",audio);
         // alert(Option1);
-        fetch('http://192.168.1.2:3001/Assessment', {
+        fetch('http://192.168.1.3:3001/Assessment', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

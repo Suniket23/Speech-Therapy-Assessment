@@ -22,7 +22,7 @@ import {englishData} from './EnglishQuestions';
 import QuestionItem from './QuestionItem';
 const {height, width} = Dimensions.get('window');
 const App = () => {
-  const serverIP = "http://192.168.1.2:3001/";
+  const serverIP = "http://192.168.1.3:3001/";
   const [currentIndex, setCurrentIndex] = useState(1);
   // const [questions, setQuestions] = useState(englishData);
   const listRef = useRef();

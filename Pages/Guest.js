@@ -7,11 +7,11 @@ import Sound from 'react-native-sound';
 import {useNavigation} from "@react-navigation/native";
 const Guest=()=>{
     const navigation = useNavigation();
-    const serverIP = "http://192.168.1.2:3001/";
+    const serverIP = "http://192.168.1.3:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        
-        fetch(serverIP + 'records')
+        fetch(serverIP + 'card')
         .then(response => response.json())
         .then(results => {console.log("results = ",results); setData(results)});
         
@@ -21,7 +21,7 @@ const Guest=()=>{
     },[])
 
     const playSound = (item) => {
-        sound1 = new Sound(item.audioURL,'', (error, _sound) => {
+        sound1 = new Sound(item.cardAudio,'', (error, _sound) => {
           if (error) {
             alert('error' + error.message);
             return;
@@ -38,7 +38,7 @@ const Guest=()=>{
               <Image
               style={styles.imgStyle}
               resizeMode="cover"
-              source={{uri:item.imageURL}}
+              source={{uri:item.cardImg}}
               alt="img1"
               />
             </View>
@@ -58,7 +58,7 @@ const Guest=()=>{
              <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('TakeAssess')}>
               <Text style={styles.appButtonText}>Give assessment</Text>
              </TouchableOpacity>
-              {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.id.toString()} />}
+              {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.cardID.toString()} />}
             </View>
     )
 }

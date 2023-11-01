@@ -15,41 +15,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-
-// const uri = "mongodb+srv://fluency:Pastaway33@cluster0.cf22whd.mongodb.net/?retryWrites=true&w=majority";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
-// });
-
-// async function run() {
-//   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await client.connect();
-//     // Send a ping to confirm a successful connection
-//     await client.db("main").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
-
-
 var upload1 = multer();
 
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
     password:'Pastaway$33',
-    database:'main'
+    database:'speechtherapyapplication'
 })  
 
 
@@ -96,26 +68,26 @@ app.post('/insert',function(req,res) {
     })
 })
 
-app.get('/storeData',function(req,res){
-    pool.query('select * from records ',function(err,results,field) {
+app.get('/card',function(req,res){
+    pool.query('select * from card',function(err,results,field) {
         if(err)
             throw err;
-        console.log("results of records = ",results);
+        console.log("results of card = ",results);
         res.send(results);
     })
 })
-app.post('/storeData',function(req,res){
-    const {imageName,audioName,category,subCategory}=req.body;
+app.post('/card',function(req,res){
+    const {cardImg,cardAudio,mainCategory,subCategory}=req.body;
     console.log("reqbody=",req.body);
-    const sql = `INSERT INTO records (imageURL,audioURL,categoryName,subCategoryName) VALUES (?, ?, ?, ?)`;
-    pool.query(sql, [imageName,audioName,category,subCategory], (error, res) => {
+    const sql = `INSERT INTO card (cardImg,cardAudio,mainCategory,subCategory) VALUES (?, ?, ?, ?)`;
+    pool.query(sql, [cardImg,cardAudio,mainCategory,subCategory], (error, res) => {
         if (error) {
           console.error(error);
           res.status(500).send('Error inserting user');
         }
-        //   else {
-        //   res.json('User inserted successfully');
-        // }
+          else {
+          res.json('User inserted successfully');
+        }
     })
 })
 app.get('/assessment',function(req,res){
@@ -203,8 +175,8 @@ app.get('/getCategory',function(req,res){
     })
 })
 
-app.get('/records',function(req,res){
-    pool.query('select * from records',function(err,results,field){
+app.get('/card',function(req,res){
+    pool.query('select * from card',function(err,results,field){
         if(err)
            throw err;
         console.log("results of records= ",results);
@@ -212,11 +184,11 @@ app.get('/records',function(req,res){
     })
 })
 
-app.get('/sign_in',function(req,res){
-    pool.query('select * from sign_in',function(err,results,field){
+app.get('/doctor',function(req,res){
+    pool.query('select * from doctor',function(err,results,field){
         if(err)
            throw err;
-        console.log("results of sign_in= ",results);
+        console.log("results of doctor= ",results);
         res.send(results);
     })
 })
@@ -224,8 +196,8 @@ app.get('/sign_in',function(req,res){
 app.post('/Register',function(req,res){
     const obj=req.body;
     console.log(req);
-    var sql = "INSERT INTO sign_in (email,password,name) VALUES ?";
-    var values=[[obj.email.value,obj.password.value,obj.name.value]]
+    var sql = "INSERT INTO patient (name,email,password,dob) VALUES ?";
+    var values=[[obj.name.value,obj.email.value,obj.password.value,obj.dob]]
     pool.query(sql,[values],function(err,results){
         if(err)
            throw err;

@@ -22,7 +22,7 @@ function Create() {
     const [categoryName,setCategoryName] = useState("");
     const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
-    const serverIP = "http://192.168.1.2:3001/";
+    const serverIP = "http://192.168.1.3:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
@@ -74,12 +74,8 @@ function Create() {
              }else if (response.customButton) {
               console.log('User tapped custom button: ', response.customButton);
              }
-          });
-        
-      
+          }); 
     }
-
-    
     const pull_data = (data) => {
       console.log("Data recieved from category = ",data);
       setCategoryName(data.title);

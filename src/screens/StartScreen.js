@@ -20,20 +20,21 @@ export default function StartScreen({ navigation }) {
         mode="contained"
         onPress={() => navigation.navigate('LoginScreen')}
       >
-        लॉगिन 
+        {/* लॉगिन  */}
+        Doctor's Login
       </Button>
       <Button
         mode="outlined"
         onPress={() => navigation.navigate('RegisterScreen')}
       >
-        Sign Up
+        Patient's Sign Up
       </Button>
 
       <Button
         mode="outlined"
         onPress={() => navigation.navigate('Guest')}
       >
-        Guest
+        Login
       </Button>
     </Background>
   )

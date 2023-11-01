@@ -45,7 +45,7 @@ function ChooseOptions(props){
     const [photoName,setPhotoName] = useState("");
     const [voiceName,setVoiceName] = useState("");
     
-    const serverIP = "http://192.168.1.2:3001/";
+    const serverIP = "http://192.168.1.3:3001/";
     // const data = new FormData();
     // data.append("category",category);
     // data.append("subCategory",subCategory);

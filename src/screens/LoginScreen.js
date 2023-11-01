@@ -15,10 +15,10 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [Data, setData] = useState([]);
-  const serverIP="http://192.168.1.2:3001/";
+  const serverIP="http://192.168.1.3:3001/";
   const getData = async() => {
        
-    fetch(serverIP + 'sign_in')
+    fetch(serverIP + 'doctor')
     .then(response => response.json())
     .then(results => {console.log("results = ",results); setData(results);console.log(Data);});
 }
@@ -35,14 +35,22 @@ useEffect(()=>{
       setPassword({ ...password, error: passwordError })
       return
     }
-    if(Data[0].email!==email.value || Data[0].password!==password.value){
-      Alert.alert("Email or password is not correct"); 
+    let f=0;
+    for (const i in Data) {
+      if(Data[i].email===email.value && Data[i].password===password.value){
+        // Alert.alert("Email or password is not correct");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
+        f=1; 
+      }
     }
-    else{
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      })
+    // if(Data[0].email!==email.value || Data[0].password!==password.value){
+    //   Alert.alert("Email or password is not correct"); 
+    // }
+    if(f==0){
+      Alert.alert("Email or password is not correct");
     }
   }
 
@@ -82,12 +90,12 @@ useEffect(()=>{
       <Button mode="contained" onPress={onLoginPressed}>
         लॉगिन 
       </Button>
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <Text>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </Background>
   )
 }
