@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -14,19 +14,36 @@ import { passwordValidator } from '../helpers/passwordValidator'
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const [Data, setData] = useState([]);
+  const serverIP="http://192.168.1.2:3001/";
+  const getData = async() => {
+       
+    fetch(serverIP + 'sign_in')
+    .then(response => response.json())
+    .then(results => {console.log("results = ",results); setData(results);console.log(Data);});
+}
+useEffect(()=>{
+  getData();
+},[])
 
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
+    // var data=JSON.parse(Data)
     if (emailError || passwordError) {
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Home' }],
-    })
+    if(Data[0].email!==email.value || Data[0].password!==password.value){
+      Alert.alert("Email or password is not correct"); 
+    }
+    else{
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      })
+    }
   }
 
   return (

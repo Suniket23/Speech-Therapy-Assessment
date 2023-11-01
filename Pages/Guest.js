@@ -7,7 +7,7 @@ import Sound from 'react-native-sound';
 import {useNavigation} from "@react-navigation/native";
 const Guest=()=>{
     const navigation = useNavigation();
-    const serverIP = "http://192.168.63.91:3001/";
+    const serverIP = "http://192.168.1.2:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        

@@ -25,13 +25,13 @@ import { Button } from 'react-native-paper';
 
 
 function SubUpdate(props){
-    // console.log("Props = ",props.route.params);
+    console.log("Props = ",props.route.params);
     
     const navigation = useNavigation();
     const [objData,setobjData] = useState();
     const label = props.route.params;
     console.log("Sub label = ",label);
-    const serverIP = "http://192.168.1.18:3001/";
+    const serverIP = "http://192.168.1.2:3001/";
     const data = new FormData();
     data.append("subCategory",label);
     const config = {
@@ -59,7 +59,7 @@ function SubUpdate(props){
         console.log("ITEM = ",item);
         return(
           <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('ChooseOptions',[item.label,item.subLabel]) }>
-              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.subLabel} </Text>        
+              <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.subLabel} </Text>       
           </Button>
         );
       }

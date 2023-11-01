@@ -34,6 +34,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import DeleteCategory from './Pages/DeleteCategory';
 import Voice2 from './Pages/Voice2';
+import Dashboard from './src/screens/Dashboard';
 
  
 const Stack = createNativeStackNavigator();
@@ -44,7 +45,8 @@ function App(){
   return(
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='StartScreen' >
+        <Stack.Navigator initialRouteName='Dashboard' >
+          <Stack.Screen name="Dashboard" component={Dashboard} />
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />

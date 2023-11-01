@@ -30,7 +30,7 @@ function Update(){
     });
     const [data,setData] = useState([]);
     
-    const serverIP = "http://192.168.63.91:3001/";
+    const serverIP = "http://192.168.1.2:3001/";
     const getData = async() => {
        
         fetch(serverIP + 'getCategory')
@@ -45,8 +45,8 @@ function Update(){
     const renderItem = ({item}) =>{
       
       return(
-        <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('SubUpdate',item.label) }>
-          <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.label} </Text>
+        <Button mode='outlined' style={{paddingHorizontal:20,margin:10}} onPress={() => navigation.navigate('SubUpdate',item.category) }>
+          <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.category} </Text>
         </Button>
       );
     }
@@ -55,7 +55,7 @@ function Update(){
     <NativeBaseProvider>
       
       <Center flex={1}>
-        {data && <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item.val.toString()} />}
+        {data && <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item.val} />}
       </Center>
   </NativeBaseProvider>
   

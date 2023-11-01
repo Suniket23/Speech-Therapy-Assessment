@@ -22,7 +22,7 @@ import {englishData} from './EnglishQuestions';
 import QuestionItem from './QuestionItem';
 const {height, width} = Dimensions.get('window');
 const App = () => {
-  const serverIP = "http://192.168.63.91:3001/";
+  const serverIP = "http://192.168.1.2:3001/";
   const [currentIndex, setCurrentIndex] = useState(1);
   // const [questions, setQuestions] = useState(englishData);
   const listRef = useRef();
@@ -264,7 +264,7 @@ const App = () => {
                 marginTop: 20,
                 color: 'green',
               }}>
-              {getTextScore()}
+              {getTextScore()}{'/'+data.length*5}
             </Text>
             <TouchableOpacity
               style={{

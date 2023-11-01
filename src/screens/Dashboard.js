@@ -4,8 +4,10 @@ import Logo from '../components/Logo'
 import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
+import { LogBox } from "react-native";
 
 export default function Dashboard({ navigation }) {
+  LogBox.ignoreLogs(["EventEmitter.removeListener"]);
   return (
     <Background>
       <Logo />
