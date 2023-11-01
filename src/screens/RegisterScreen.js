@@ -12,6 +12,8 @@ import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
+import { json } from 'body-parser'
+import { response } from 'express'
 
 import { json } from 'body-parser'
 import { response } from 'express'
@@ -65,6 +67,7 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <Background>
+      {/* <BackButton goBack={navigation.goBack} /> */}
       {/* <BackButton goBack={navigation.goBack} /> */}
       <Logo />
       <Header>Create Account</Header>

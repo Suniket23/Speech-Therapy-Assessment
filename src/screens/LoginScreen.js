@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -29,6 +31,7 @@ useEffect(()=>{
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
+    // var data=JSON.parse(Data)
     // var data=JSON.parse(Data)
     if (emailError || passwordError) {
       setEmail({ ...email, error: emailError })
