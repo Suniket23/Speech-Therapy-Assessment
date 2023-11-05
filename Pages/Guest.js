@@ -7,7 +7,7 @@ import Sound from 'react-native-sound';
 import {useNavigation} from "@react-navigation/native";
 const Guest=()=>{
     const navigation = useNavigation();
-    const serverIP = "http://192.168.1.3:3001/";
+    const serverIP = "http://192.168.59.91:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        
@@ -55,7 +55,7 @@ const Guest=()=>{
     return (
             <View style={styles.mainContainer}>
              {/* <Text style={{color:"black"}}>Take assessment</Text> */}
-             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('TakeAssess')}>
+             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('Quiz')}>
               <Text style={styles.appButtonText}>Give assessment</Text>
              </TouchableOpacity>
               {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.cardID.toString()} />}

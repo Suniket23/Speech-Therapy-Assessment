@@ -15,9 +15,6 @@ import { nameValidator } from '../helpers/nameValidator'
 import { json } from 'body-parser'
 import { response } from 'express'
 
-import { json } from 'body-parser'
-import { response } from 'express'
-
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
@@ -37,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
       return
     }
     else{
-      fetch('http://192.168.1.3:3001/Register',{
+      fetch('http://192.168.59.91:3001/Register',{
         method:'POST',
         headers: {
           'Accept': 'application/json',

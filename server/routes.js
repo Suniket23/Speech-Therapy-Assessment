@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const mysql = require('mysql2');
+const mysql = require('mysql2');
 const morgan = require('morgan');
 const cors = require('cors');
 var fs = require('fs');
@@ -166,7 +166,7 @@ app.get('/getInfo',function(req,res){
     
 // })
 app.get('/getCategory',function(req,res){
-    pool.query('select category from records group by category',function(err,results,field){
+    pool.query('select mainCategory from card group by mainCategory',function(err,results,field){
         if(err){
             throw err;
         }
@@ -216,15 +216,15 @@ app.get('/getSubData',function(req,res) {
     })
     
 })
-app.post('/getSubCategoryData',upload1.any('subcategory'),(req,res,next) =>{
+app.post('/getSubCategoryData',upload1.any('subCategory'),(req,res,next) =>{
 
     console.log("IN sub categ");
     const  obj = JSON.parse(JSON.stringify(req.body));
     console.log("OBJ = ",obj);
-    const val = obj.subcategory;
+    const val = obj.subCategory;
    
         
-        pool.query('select subcategory from records where category = ?',val,function(err,results,fields) {
+        pool.query('select subCategory from card where mainCategory = ?',val,function(err,results,fields) {
             if(err)
             {
                console.log(err);
