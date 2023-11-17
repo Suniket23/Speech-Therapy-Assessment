@@ -22,7 +22,7 @@ function Create() {
     const [categoryName,setCategoryName] = useState("");
     const [subCategoryName,setSubCategoryName] = useState("");
     const [voiceName,setVoiceName] = useState("");
-    const serverIP = "http://192.168.1.3:3001/";
+    const serverIP = "http://192.168.1.2:3001/";
     let [fontsLoaded] = useFonts({
       Poppins_600SemiBold,Poppins_400Regular,Poppins_500Medium
     });
@@ -31,12 +31,11 @@ function Create() {
   
     const handleUploadImage = (response) => {
         const data = new FormData();
-       
         data.append("file", 'data:image/jpg;base64,' + response.assets[0].base64);
         data.append("cloud_name", "dplappado");
         data.append("upload_preset", "fluencyApp");
-                
-       
+
+        console.log("data= ",data);
      fetch("https://api.cloudinary.com/v1_1/dplappado/image/upload/",{
       method : "post",
       body: data,
@@ -58,8 +57,8 @@ function Create() {
           ImagePicker.launchImageLibrary(options,(response) => {
             if(response.didCancel !== true)
             { 
-                    setPhoto(response.assets[0].uri);
-                    console.log(response.assets[0].uri);
+                    // setPhoto(response.assets[0].uri);
+                    // console.log(response.assets[0].uri);
                 
                 
                 let newFile = {
@@ -81,33 +80,8 @@ function Create() {
       setCategoryName(data.title);
       setSubCategoryName(data.subTitle);
     }
-    // const pull_voice = async (data) => {
-    //   try{
-    
-    //   const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
-      
-    //   const fd = new FormData();
-    //   console.log("tempdata=",tempData);
-    //   fd.append("file","data:audio/mpeg;base64,"+tempData);
-    //   fd.append("upload_preset", "fluencyApp");
-    //   fd.append("cloud_name","dplappado");
-    //   fd.append("resource_type", "video");
+    console.log("data received from category= ",categoryName);
 
-    //   fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
-    //     method: 'POST',
-    //     body: fd
-    //   }).then(res => res.json())
-    //   .then(data => {
-    //         setVoiceName(data.url);
-    //         console.log("DATA Recieved = ",data);
-    //      }).catch((err) => {
-    //          console.log(err)
-    //      })
-    //     }catch(error){
-    //       console.log("error=",error);
-    //     }
-     
-    // }
     const pull_voice = async (data) => {
       try {
         const tempData = await RNFS.readFile(data.toString(), 'base64');
@@ -130,144 +104,45 @@ function Create() {
         const responseData = await response.json();
         setVoiceName(responseData.url);
         console.log('DATA Received = ', responseData);
+        console.log('audio url = ',responseData.url);
       } catch (error) {
         console.log(error);
       }
     };
 
-    // const onSubmitData =async() => {
-    //   console.log("submit button clicked ");
-    //   const data = new FormData();
-    //   data.append('imageName',photo);
-    //   data.append('audioName',voiceName);
-    //   data.append('category',categoryName);
-    //   data.append('subCategory',subCategoryName);
-    //   data.append('allData',{
-    //       imageName : photoName
-    //   })
-    //   const config = {
-    //     method: 'POST',
-    //     headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'multipart/form-data',
-    //              },
-    //     body:data
-    //    }
-    //    console.log("CONFIG -> ",config);
-    //    fetch(serverIP+"storeData", config)
-    //               .then((checkStatusAndGetJSONResponse)=>{       
-    //                 console.log("check = "+checkStatusAndGetJSONResponse);
-    //               }).catch((err)=>{console.log(err)});
+    const onSubmitData =async()=>{
+      const data={photoName,categoryName,subCategoryName,voiceName};
+      fetch('http://192.168.1.2:3001/storeData', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
 
-    //   Alert.alert(
-    //                 "Data Submitted",
-    //                 "Record added successfully",                   
-    //                 [
-    //                   {
-    //                     text: "Ok",
-    //                     style: "cancel"
-    //                   },                     
-    //                 ]
-    //               );
-                
-    // }
-    // const onSubmitData = async () => {
-    //   console.log('submit button clicked');
-    //   const data = new FormData();
-    //   data.append('imageName', photo);
-    //   data.append('category', categoryName);
-    //   data.append('subCategory', subCategoryName);
-    //   data.append('allData', JSON.stringify({ imageName: photoName }));
+        cardImg:photoName,
     
-    //   // Read the audio file and append it to the form data
-    //   const audioData = await RNFS.readFile(voiceName, 'base64');
-    //   data.append('audioName', audioData);
+        cardAudio: voiceName,
     
-    //   const config = {
-    //     method: 'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //     body: data,
-    //   };
-    //   console.log('CONFIG -> ', config);
-      
-    //   try {
-    //     const response = await fetch(serverIP + 'storeData', config);
-    //     const checkStatusAndGetJSONResponse = await response.json();
-    //     console.log('check = ', checkStatusAndGetJSONResponse);
-        
-    //     Alert.alert(
-    //       'Data Submitted',
-    //       'Record added successfully',
-    //       [
-    //         {
-    //           text: 'Ok',
-    //           style: 'cancel',
-    //         },
-    //       ]
-    //     );
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
+        mainCategory: categoryName,
 
-    const onSubmitData = async () => {
-      console.log('submit button clicked');
-      const data = new FormData();
-      data.append('imageName', photo);
-      data.append('category', categoryName);
-      data.append('subCategory', subCategoryName);
-      data.append('allData', JSON.stringify({ imageName: photoName }));
-    
-      try {
-        // Read the audio file and append it to the form data
-        const audioData = await RNFS.readFile(voiceName, 'base64');
-        data.append('audioName', audioData);
-    
-        const response = await fetch(serverIP + 'storeData', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'multipart/form-data',
-          },
-          body: data,
-        });
-    
-        if (response.ok) {
-          const checkStatusAndGetJSONResponse = await response.json();
-          console.log('check = ', checkStatusAndGetJSONResponse);
-    
-          Alert.alert(
-            'Data Submitted',
-            'Record added successfully',
-            [
-              {
-                text: 'Ok',
-                style: 'cancel',
-              },
-            ]
-          );
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      } catch (error) {
-        console.log(error);
-        // Handle the error appropriately, such as showing an error message to the user
-        Alert.alert(
-          'Error',
-          'An error occurred while submitting data.',
-          [
-            {
-              text: 'Ok',
-              style: 'cancel',
-            },
-          ]
-        );
-      }
-    };
-    
+        subCategory:subCategoryName,
+      })
+    }).then(response => response.json())
+      .then(json=>console.log(json))
+      .catch(error => console.error(error))
+
+      Alert.alert(
+        "Data Submitted",
+        "Record added successfully",                   
+        [
+          {
+            text: "Ok",
+            style: "cancel"
+          },                     
+        ]
+      );
+    }
     
   return (
     <NativeBaseProvider>

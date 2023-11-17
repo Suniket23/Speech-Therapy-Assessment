@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
+// import React, { useEffect, useState } from 'react'
+// import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -17,7 +17,7 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [Data, setData] = useState([]);
-  const serverIP="http://192.168.1.3:3001/";
+  const serverIP="http://192.168.1.2:3001/";
   const getData = async() => {
        
     fetch(serverIP + 'doctor')

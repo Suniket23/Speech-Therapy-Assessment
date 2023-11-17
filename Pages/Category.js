@@ -18,7 +18,7 @@ function Category(props) {
   const [data,setData] = useState([]); 
   const [subData,setSubData] = useState([]); 
   const obj = {title : "",subTitle : ""};
-  const serverIP = "http://192.168.1.3:3001/";
+  const serverIP = "http://192.168.1.2:3001/";
   const onTextChange = (txt) => {
     setText(txt);
   }
@@ -26,23 +26,8 @@ function Category(props) {
     setSubText(text);
   }
   const insertData = () => {
-    console.log("text= "+JSON.stringify(text));
-    fetch(serverIP+'insert',{
-      method:'POST',
-        body:JSON.stringify({
-          title:text,
-          subTitle:subText
-        }),
-        mode: 'no-cors',
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-      } 
-      
-
-      
-    })
-    .then(response => response.json())
-    .then(() => getData());
+    obj.title=text;
+    obj.subTitle=subText;
     Alert.alert(
       "Data Submitted",
       "Categories Added Successfully",
@@ -53,6 +38,20 @@ function Category(props) {
         },                     
       ]
     );
+  //   console.log("text= "+JSON.stringify(text));
+  //   fetch(serverIP+'insert',{
+  //     method:'POST',
+  //       body:JSON.stringify({
+  //         title:text,
+  //         subTitle:subText
+  //       }),
+  //       mode: 'no-cors',
+  //       headers: {
+  //         "Content-type": "application/json; charset=UTF-8"
+  //     } 
+  //   })
+  //   .then(response => response.json())
+  //   .then(() => getData());
   }
 
   const getCategoryData = () => {
@@ -96,10 +95,11 @@ function Category(props) {
         <View >
             <View >
             <TextInput
-                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',color:'black',paddingHorizontal: 100,marginVertical:20,}} 
+                style={{alignItems:'center',justifyContent:'center',backgroundColor:'white',paddingHorizontal: 100,marginVertical:20,}} 
                 placeholder = 'Add Category'
                 value={text}
                 onChangeText={(text) => onTextChange(text)}
+                placeholderTextColor={'black'}
               />
             
              <TextInput
@@ -107,6 +107,7 @@ function Category(props) {
                 placeholder = 'Add Sub Category'
                 value={subText}
                 onChangeText={(text) => onSubTextChange(text)}
+                placeholderTextColor={'black'}
               />
             </View>
             <View style={styles.button1}>
@@ -139,7 +140,6 @@ function Category(props) {
                 ontxtChange(item.label);
                 setValue(item.label);
                 setIsFocus(false);
-                
                     }}       
                 />
                 
@@ -216,9 +216,11 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
+    placeholderTextColor:'black'
   },
   selectedTextStyle: {
     fontSize: 16,
+    color:'black'
   },
   iconStyle: {
     width: 20,
@@ -227,6 +229,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    color:'black'
   },
 })
 export default Category;

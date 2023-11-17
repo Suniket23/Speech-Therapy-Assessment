@@ -32,9 +32,9 @@ export default function StartScreen({ navigation }) {
 
       <Button
         mode="outlined"
-        onPress={() => navigation.navigate('Guest')}
+        onPress={() => navigation.navigate('Userl')}
       >
-        Login
+        Patient's Login
       </Button>
     </Background>
   )

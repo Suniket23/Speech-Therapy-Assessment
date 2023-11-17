@@ -90,19 +90,19 @@ app.post('/card',function(req,res){
         }
     })
 })
-app.get('/assessment',function(req,res){
-    pool.query('select * from assessment ',function(err,results,field) {
+app.get('/assess',function(req,res){
+    pool.query('select * from assess ',function(err,results,field) {
         if(err)
             throw err;
-        console.log("results of getinfo = ",results);
+        console.log("result of getinfo = ",results);
         res.send(results);
     })
 })
-app.post('/Assessment',function(req,res){
+app.post('/assess',function(req,res){
     const {audio,option1,option2,option3,correct_option}=req.body;
     console.log("option1=",req.body);
     // const {Option1,Option2,Option3,CorrectOption}=Info;
-    const sql = `INSERT INTO assessment (audio,option1, option2, option3, correct_option) VALUES (?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO assess (audio,option1, option2, option3, correct_option) VALUES (?, ?, ?, ?, ?)`;
     pool.query(sql, [audio,option1, option2, option3, correct_option], (error, res) => {
         if (error) {
           console.error(error);
@@ -125,19 +125,6 @@ app.post('/TakeAssess',function(req,res){
         }
     });
 })
-// app.post('/Quiz',function(req,res){
-//     const {marks,iduser}=req.body;
-//     console.log("marks=",marks);
-//     const sql = `UPDATE user SET marks=? where iduser=?`;
-//     pool.query(sql, [marks,iduser], (error, res) => {
-//         if (error) {
-//           console.error(error);
-//         //   res.status(500).send('Error inserting user');
-//         // Alert("error while inserting user");
-//         }
-//     });
-
-// })
 app.get('/TakeAssess',function(req,res){
     pool.query('select * from user',function(err,results,field) {
         if(err)
@@ -148,23 +135,13 @@ app.get('/TakeAssess',function(req,res){
 })
 
 app.get('/getInfo',function(req,res){
-    pool.query('select * from records ',function(err,results,field) {
+    pool.query('select * from assess',function(err,results,field) {
         if(err)
             throw err;
         console.log("results of getinfo = ",results);
         res.send(results);
     })
 })
-// app.get('/getCategory',function(req,res) {
-   
-//     pool.query('select * from category group by label ',function(err,results,field) {
-//         if(err)
-//             throw err;
-//         console.log("Results of category = ",results);
-//         res.send(results);
-//     })
-    
-// })
 app.get('/getCategory',function(req,res){
     pool.query('select mainCategory from card group by mainCategory',function(err,results,field){
         if(err){
@@ -192,6 +169,14 @@ app.get('/doctor',function(req,res){
         res.send(results);
     })
 })
+app.get('/patient',function(req,res){
+    pool.query('select * from patient',function(err,results,field){
+        if(err)
+           throw err;
+        console.log("results of patient= ",results);
+        res.send(results);
+    })
+})
 
 app.post('/Register',function(req,res){
     const obj=req.body;
@@ -208,7 +193,7 @@ app.post('/Register',function(req,res){
 })
 app.get('/getSubData',function(req,res) {
     console.log("IN sub data request ");
-    pool.query('select * from subCategory ',function(err,results,field) {
+    pool.query('select subCategory from card ',function(err,results,field) {
         if(err)
             throw err;
         console.log("Results of get sub data = ",results);
@@ -336,7 +321,7 @@ app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
     const category = obj.category;
     const subCategory = obj.subCategory;   
    
-    pool.query('select * from records where categoryName=? and ' + 'subCategoryName=? ',[category,subCategory],function(err,results,fields) {
+    pool.query('select * from card where mainCategory=? and ' + 'subCategory=? ',[category,subCategory],function(err,results,fields) {
         if(err)
                 throw err;
             console.log("Results of Image Audio = ",results);
@@ -344,27 +329,17 @@ app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
     })
 
 })
-
-
-
-
-app.post('/storeData',upload1.single('allData'),(req,res,next) => {
-    console.log("IN store data");
-    const  obj = JSON.parse(JSON.stringify(req.body));
-    console.log(obj);
-
-    var imageName = obj.imageName;    
-    var audioName = obj.audioName;
-    var categoryName = obj.category;
-    var subCategoryName = obj.subCategory; 
-   
-    pool.query("insert into records(" +  "imageURL, " + "audioURL, " + "categoryName," + " subCategoryName) values(?,?,"+ "?,"+ "?)",[imageName,audioName,categoryName,subCategoryName],function(err,results,fields) {
-        console.log("In query");
-            if(err)
-                throw err;
-            console.log("Results = ",results);
-            res.send(results);
-    })
+app.post('/storeData',function(req,res){
+    const {cardImg,cardAudio,mainCategory,subCategory}=req.body;
+    console.log("option1=",req.body);
+    // const {Option1,Option2,Option3,CorrectOption}=Info;
+    const sql = `INSERT INTO card (cardImg,cardAudio,mainCategory,subCategory) VALUES (?, ?, ?, ?)`;
+    pool.query(sql, [cardImg,cardAudio,mainCategory,subCategory], (error, res) => {
+        if (error) {
+          console.error(error);
+        //   res.status(500).send('Error inserting user');
+        }
+    });
 })
 
 app.listen(3001, () => {

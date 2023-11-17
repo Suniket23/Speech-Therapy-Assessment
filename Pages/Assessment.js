@@ -9,15 +9,12 @@ import { json } from "body-parser";
 import * as ImagePicker from "react-native-image-picker";
 var RNFS = require('react-native-fs');
 import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-const serverIP = "http://192.168.1.3:3001/";
+const serverIP = "http://192.168.1.2:3001/";
 // import TextInput from "../src/components/TextInput";
 
 const Assessment=()=>{
   const navigation = useNavigation();
     const [audio,setaudio]=useState();
-    // const [Option1,setOption1]=useState("");
-    // const [Option2,setOption2]=useState("");
-    // const [Option3,setOption3]=useState("");
     const [CorrectOption,setCorrectOption]=useState("");
     const [Info,setInfo]=useState({});
     const [photo1,setPhoto1] = useState("");
@@ -79,30 +76,6 @@ const Assessment=()=>{
            }
         }); 
      }
-
-    //  const pull_voice = async (data) => {
-    
-    //   const tempData = await RNFS.readFile(data.toString(),'base64') // r is the path to the .wav file on the phone
-    //   // console.log("temp=",tempData);
-    //   const fd = new FormData();
-    //   fd.append("file","data:audio/mpeg;base64,"+tempData);
-    //   fd.append("upload_preset", "fluencyApp");
-    //   fd.append("cloud_name","dplappado");
-    //   fd.append("resource_type", "video");
-    //   console.log("fd=",fd);
-
-    //   fetch('https://api.cloudinary.com/v1_1/dplappado/image/upload', {
-    //     method: 'POST',
-    //     body:fd
-    //   }).then(res => res.json())
-    //   .then(data => {
-    //         setaudio(data.url);
-    //         console.log("DATA Recieved = ",data);
-    //      }).catch((err) => {
-    //          console.log(err)
-    //      })
-     
-    // }
     const pull_voice = async (data) => {
       try {
         const tempData = await RNFS.readFile(data.toString(), 'base64');
@@ -136,7 +109,7 @@ const Assessment=()=>{
         setInfo(data);
         console.log("audio=",audio);
         // alert(Option1);
-        fetch('http://192.168.1.3:3001/Assessment', {
+        fetch('http://192.168.1.2:3001/assess', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
