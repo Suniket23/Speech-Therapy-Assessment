@@ -125,6 +125,20 @@ app.post('/TakeAssess',function(req,res){
         }
     });
 })
+app.post('/Quiz',function(req,res){
+    const {score,patientid,submitDate}=req.body;
+    console.log("patient info = ",req.body);
+    const sql = `INSERT INTO progress (patientid,score,submitDate) VALUES (?, ?, ?)`;
+    pool.query(sql, [patientid,score,submitDate], (error, res) => {
+        if (error) {
+          console.error(error);
+        //   res.status(500).send('Error inserting user');
+        }
+        //  else {
+        //   res.send('User inserted successfully');
+        // }
+    });
+})
 app.get('/TakeAssess',function(req,res){
     pool.query('select * from user',function(err,results,field) {
         if(err)

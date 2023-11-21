@@ -13,16 +13,19 @@ import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 
-export default function LoginScreen({ navigation }) {
+export default function Userl({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [Data, setData] = useState([]);
+  const [id,pid]=useState(0);
   const serverIP="http://192.168.1.4:3001/";
   const getData = async() => {
        
-    fetch(serverIP + 'doctor')
+    fetch(serverIP + 'patient')
     .then(response => response.json())
-    .then(results => {console.log("results = ",results); setData(results);console.log(Data);});
+    .then(results => {console.log("results of userl = ",results);
+    setData(results);
+    console.log(Data);});
 }
 useEffect(()=>{
   getData();
@@ -39,16 +42,20 @@ useEffect(()=>{
       return
     }
     let f=0;
+    console.log('Data..= ',Data);
     for (const i in Data) {
       if(Data[i].email===email.value && Data[i].password===password.value){
         // Alert.alert("Email or password is not correct");
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Home' }],
+          routes: [{
+             name: 'Guest' ,
+             params:{uid:Data[i].patientid}
+            }],
         })
         f=1; 
       }
-    }
+    };
     // if(Data[0].email!==email.value || Data[0].password!==password.value){
     //   Alert.alert("Email or password is not correct"); 
     // }

@@ -5,9 +5,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeBaseProvider,  VStack} from "native-base";
 import Sound from 'react-native-sound';
 import {useNavigation} from "@react-navigation/native";
-const Guest=()=>{
+const Guest=({route})=>{
     const navigation = useNavigation();
-    const serverIP = "http://192.168.1.2:3001/";
+    const uid=route.params.uid;
+    console.log("id is ",uid);
+    const serverIP = "http://192.168.1.4:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        
@@ -55,7 +57,7 @@ const Guest=()=>{
     return (
             <View style={styles.mainContainer}>
              {/* <Text style={{color:"black"}}>Take assessment</Text> */}
-             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('Quiz')}>
+             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('Quiz',{uid:uid})}>
               <Text style={styles.appButtonText}>Give assessment</Text>
              </TouchableOpacity>
               {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.cardID.toString()} />}

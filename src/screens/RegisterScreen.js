@@ -34,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
       return
     }
     else{
-      fetch('http://192.168.1.2:3001/Register',{
+      fetch('http://192.168.1.4:3001/Register',{
         method:'POST',
         headers: {
           'Accept': 'application/json',

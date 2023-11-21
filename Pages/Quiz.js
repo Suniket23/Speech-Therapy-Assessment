@@ -21,13 +21,22 @@ import React, {useRef, useState} from 'react';
 import {englishData} from './EnglishQuestions';
 import QuestionItem from './QuestionItem';
 const {height, width} = Dimensions.get('window');
-const App = () => {
-  const serverIP = "http://192.168.1.2:3001/";
+const App = ({route}) => {
+  const serverIP = "http://192.168.1.4:3001/";
   const [currentIndex, setCurrentIndex] = useState(1);
   // const [questions, setQuestions] = useState(englishData);
+  const currentDate = new Date();
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+  const year = currentDate.getFullYear();
+  // Creating a formatted date string
+  const currDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+
+  const uid=route.params.uid;
   const listRef = useRef();
   const [modalVisible, setModalVisible] = useState(false);
   const [data,setData]=useState([]);
+  // const [marks,getmarks]=useState(0);
   const getData = async() => {
        
             fetch(serverIP + 'assess')
@@ -35,7 +44,7 @@ const App = () => {
             .then(results => {setData(results);console.log("results = ",results);});
         }
         useEffect(() => {
-          // console.warn("render",i)
+          console.log("render",uid)
             getData();
         },[])
 
@@ -68,21 +77,28 @@ const App = () => {
         }
       }
     });
-    // fetch('http://192.168.1.18:3001/Quiz', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     marks:marks,
-    //     iduser:Phoneno
-    //   })
-    // }).then(response => response.json())
-    //   .then(json=>console.log(json))
-    //   .catch(error => console.error(error))
+    // getmarks(marks);
     return marks;
   };
+  const onSubmit=async()=>{
+    console.log("fun=",1);
+    fetch("http://192.168.1.4:3001/Quiz", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        score:getTextScore(),
+        patientid:uid,
+        submitDate:currDate,
+      })
+    }).then(response => response.json())
+      .then(json=>console.log(json))
+      .catch(error => console.error(error))
+      setModalVisible(true);
+  }
+
   const reset = () => {
     const tempData = data;
     tempData.map((item, ind) => {
@@ -195,9 +211,10 @@ const App = () => {
               alignItems: 'center',
             }}
             onPress={() => {
-              setModalVisible(true);
+              setModalVisible(true)
+              console.log("score=",getTextScore());
             }}>
-            <Text style={{color: '#fff'}}>Submit</Text>
+            <Text style={{color: '#fff'}} onPress={onSubmit}>Submit</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
