@@ -20,9 +20,10 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Pastaway$33',
+    password:'Mysqlop@123',
     database:'speechtherapyapplication'
 })  
+  
 
 
 app.use(cors());

@@ -9,6 +9,7 @@ import { NativeBaseProvider, Box, VStack} from "native-base";
 
 
 import Home from './Pages/Home';
+
 import StartScreen from './src/screens/StartScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -36,6 +37,8 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import DeleteCategory from './Pages/DeleteCategory';
 import Voice2 from './Pages/Voice2';
 import Dashboard from './src/screens/Dashboard';
+import PatientsList from './Pages/PatientsList';
+import Cards from './Pages/Cards';
 
  
 const Stack = createNativeStackNavigator();
@@ -48,6 +51,8 @@ function App(){
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Dashboard' >
           <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="PatientsList" component={PatientsList} />
+          <Stack.Screen name="Cards" component={Cards} />
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
