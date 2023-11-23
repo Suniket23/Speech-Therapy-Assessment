@@ -3,6 +3,13 @@
 import React, {useState} from 'react';
 import { LogBox } from "react-native";
 
+import Background from '../src/components/Background'
+import Logo from '../src/components/Logo'
+import Header from '../src/components/Header'
+import Paragraph from '../src/components/Paragraph'
+// import Button from '../src/components/Button'
+
+
 import {
   
   StyleSheet,
@@ -25,21 +32,31 @@ function Home({navigation}){
 
   LogBox.ignoreLogs(["EventEmitter.removeListener"]);
   return(
+    
     <NativeBaseProvider>
-      
+      <Button
+        mode="outlined"
+        colorScheme='gray'
+        onPress={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'StartScreen' }],
+          })
+        }
+      >
+        Logout
+      </Button>
+
       <VStack space={4} alignItems="center" style={styles.container}>
-        <Button w={240} height={140} padding={50} style={styles.button}  endIcon={<Icon name="plus-circle" size={40} color="#FFF"/>} onPress={() => navigation.navigate('Create')} >
+        
        
+        <Button w={240} height={140} padding={50} colorScheme='blueGray'  endIcon={<Icon name="th-list" size={40} color="#FFF"/>} onPress={() => navigation.navigate('PatientsList')}>
+         Patients List
         </Button>
-        <Button w={240} height={140} padding={50} colorScheme='blueGray'  endIcon={<Icon name="edit" size={40} color="#FFF"/>} onPress={() => navigation.navigate('Update')}>
-         
+        <Button w={240} height={140} padding={50} colorScheme='teal' endIcon={<MIcon name="cards" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Cards')}>
+          Cards
         </Button>
-        <Button w={240} height={140} padding={50} colorScheme='red' endIcon={<MIcon name="delete" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Delete')}>
-          
-        </Button>
-        <Button w={240} height={140} padding={50} colorScheme='green' endIcon={<MIcon name="fa-solid fa-pen-to-square" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Assessment')}>
-          
-        </Button>
+        
         
       </VStack>
   </NativeBaseProvider>
