@@ -39,14 +39,14 @@ import Voice2 from './Pages/Voice2';
 import Dashboard from './src/screens/Dashboard';
 import PatientsList from './Pages/PatientsList';
 import Cards from './Pages/Cards';
+import Patient from './Pages/Patient';
+import AssignCards from './Pages/AssignCards';
 
  
 const Stack = createNativeStackNavigator();
 
 function App(){
-
-
-  return(
+return(
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Dashboard' >
@@ -77,6 +77,9 @@ function App(){
           <Stack.Screen name="Voice1" component={Voice1} />
           <Stack.Screen name="Voice2" component={Voice2} />
           <Stack.Screen name="Assessment" component={Assessment} />
+          <Stack.Screen name="Patient" component={Patient} />
+          <Stack.Screen name="AssignCards" component={AssignCards} />
+
         </Stack.Navigator>
       </NavigationContainer> 
 

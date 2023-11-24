@@ -9,7 +9,7 @@ const Guest=({route})=>{
     const navigation = useNavigation();
     const uid=route.params.uid;
     console.log("id is ",uid);
-    const serverIP = "http://192.168.254.55:3001/";
+    const serverIP = "http://192.168.196.55:3001/";
     const [data,setData] = useState([]);
     const getData = async() => {
        
@@ -55,7 +55,23 @@ const Guest=({route})=>{
         );
       }
     return (
+            
+
             <View style={styles.mainContainer}>
+            
+              <Button
+                mode="outlined"
+                colorScheme='gray'
+                onPress={() =>
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'StartScreen' }],
+                  })
+                }
+              >
+                Logout
+              </Button>
+
              {/* <Text style={{color:"black"}}>Take assessment</Text> */}
              <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('Quiz',{uid:uid})}>
               <Text style={styles.appButtonText}>Give assessment</Text>
