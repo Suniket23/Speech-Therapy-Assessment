@@ -1,26 +1,16 @@
-import { Button, Center,FlatList,Image } from "native-base";
-import React, { useEffect, useState } from "react";
-// Import LogBox
-import { LogBox } from 'react-native';
-
-// Ignore the warning
-LogBox.ignoreLogs(['Warning: Failed prop type: Image']);
-
-import {View,Text,StyleSheet,TextInput,textStyle, TouchableOpacity} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { NativeBaseProvider,  VStack} from "native-base";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ImageBackground, Alert } from 'react-native';
 import Sound from 'react-native-sound';
-import {useNavigation} from "@react-navigation/native";
-
-
-import { ImageBackground } from 'react-native'; //To suppress the warning.
-
+import { Popover, VStack, HStack, Button } from 'native-base';
+import MIcon from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from '@react-navigation/native';
 
 const Cards = () => {
   const [cards, setCards] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Fetch the list of cards from the database
     const fetchCards = async () => {
       try {
         const response = await fetch('http://192.168.196.55:3001/card');
@@ -34,42 +24,109 @@ const Cards = () => {
     fetchCards();
   }, []);
 
-const playSound = (item) => {
-  if (item && item.cardAudio) {
-    const sound1 = new Sound(item.cardAudio, '', (error, _sound) => {
-      if (error) {
-        console.error('Error: ' + error.message);
-        return;
-      }
-      sound1.play(() => {
-        sound1.release();
+  const playSound = (item) => {
+    if (item && item.cardAudio) {
+      const sound1 = new Sound(item.cardAudio, '', (error, _sound) => {
+        if (error) {
+          console.error('Error: ' + error.message);
+          return;
+        }
+        sound1.play(() => {
+          sound1.release();
+        });
       });
-    });
-  } else {
-    console.error('Item or cardAudio is missing');
-  }
-};
+    } else {
+      console.error('Item or cardAudio is missing');
+    }
+  };
 
+  const updateCard = (cardId) => {
+    navigation.navigate('Update', { cardId });
+  };
 
+  const deleteCard = (cardId) => {
+    Alert.alert(
+      'Delete Card',
+      'Are you sure you want to delete this card?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            console.log(`Deleting card with ID ${cardId}`);
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
-const renderCardItem = ({ item }) => (
-  <View style={styles.cardContainer}>
-    <ImageBackground
-      source={{ uri: item.cardImg }}
-      style={styles.cardImage}
-      accessibilityRole="image"
-      accessibilityLabel={item.altText}
-    >
-    </ImageBackground>
+  const renderCardItem = ({ item }) => (
+    <VStack space={1} style={styles.cardContainer}>
+      {/* Card Image */}
+      <ImageBackground
+        source={{ uri: item.cardImg }}
+        style={styles.cardImage}
+        accessibilityRole="image"
+        accessibilityLabel={item.altText}
+      ></ImageBackground>
+
+      {/* Play Button */}
       <TouchableOpacity style={styles.playButton} onPress={() => playSound(item)}>
         <Text style={styles.playButtonText}>Play</Text>
       </TouchableOpacity>
-  </View>
-);
 
+      {/* Options Button */}
+      <Popover
+        trigger={(triggerProps) => (
+          <TouchableOpacity {...triggerProps} style={styles.optionsButton}>
+            <Text style={styles.optionsButtonText}>
+              Options
+              <MIcon name="expand-more" size={20} color="#FFF" />
+            </Text>
+          </TouchableOpacity>
+        )}
+      >
+        <Popover.Content style={styles.popoverContent}>
+          <Popover.CloseButton />
+          <Popover.Header></Popover.Header>
+          <Popover.Body>
+            <VStack space={2}>
+              <Button onPress={() => updateCard(item.cardID)}>Update</Button>
+              <Button colorScheme="danger" onPress={() => deleteCard(item.cardID)}>
+                Delete
+              </Button>
+            </VStack>
+          </Popover.Body>
+        </Popover.Content>
+      </Popover>
+    </VStack>
+  );
+
+  const navigateToCreate = () => {
+    // Navigate to the Create.js page
+    navigation.navigate('Create');
+  };
 
   return (
     <View style={styles.container}>
+      <Button
+        w={140}
+        h={70}
+        padding={0}
+        colorScheme='blueGray'
+        borderRadius={35}
+        alignItems='center'
+        justifyContent='center'
+        endIcon={<MIcon name="add-circle" size={40} color="#FFF" />}
+        onPress={navigateToCreate}
+      >
+        Add
+      </Button>
       <Text style={styles.heading}>Cards</Text>
       <FlatList
         data={cards}
@@ -84,15 +141,17 @@ const renderCardItem = ({ item }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    color: 'black',
     backgroundColor: '#fff',
     padding: 16,
   },
   heading: {
-    color: 'black',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center', // Center items vertically
   },
   cardList: {
     flex: 1,
@@ -102,7 +161,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 200, // You can adjust the height as needed
+    height: 200,
     borderRadius: 8,
     marginBottom: 10,
   },
@@ -111,6 +170,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     alignItems: 'center',
+  },
+  optionsButton: {
+    backgroundColor: '#3498db',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+  },
+  optionsButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  popoverContent: {
+    width: 200, // Set your desired width here
   },
   playButtonText: {
     color: '#fff',
