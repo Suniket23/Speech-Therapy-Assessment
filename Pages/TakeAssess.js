@@ -30,7 +30,7 @@ const TakeAssess=()=>{
     
       const onsubmit=()=>{
         // const data={Phoneno,Name};
-        fetch('http://192.168.196.55:3001/TakeAssess', {
+        fetch('http://192.168.1.3:3001/TakeAssess', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

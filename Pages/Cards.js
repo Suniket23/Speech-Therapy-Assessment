@@ -13,7 +13,7 @@ const Cards = () => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await fetch('http://192.168.196.55:3001/card');
+        const response = await fetch('http://192.168.1.3:3001/card');
         const data = await response.json();
         setCards(data);
       } catch (error) {
@@ -56,6 +56,18 @@ const Cards = () => {
         {
           text: 'Delete',
           onPress: () => {
+            fetch('http://192.168.1.3:3001/Dcard', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              cardID:cardId
+            })
+            }).then(response => response.json())
+              .then(json=>console.log(json))
+              .catch(error => console.error(error))
             console.log(`Deleting card with ID ${cardId}`);
           },
           style: 'destructive',

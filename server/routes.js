@@ -20,7 +20,7 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Mysqlop@123',
+    password:'Pastaway$33',
     database:'speechtherapyapplication'
 })  
   
@@ -343,6 +343,16 @@ app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
             res.send(results);
     })
 
+})
+app.post('/Dcard',function(req,res){
+    const value=req.body.cardID;
+    console.log("cardID is ",value);
+    pool.query('delete from card where cardID = ? ',value,function(err,results,fields) {
+        if(err)
+                throw err;
+            console.log("Deleted from card = ",value);
+        res.send(results);
+    })
 })
 app.post('/storeData',function(req,res){
     const {cardImg,cardAudio,mainCategory,subCategory}=req.body;
