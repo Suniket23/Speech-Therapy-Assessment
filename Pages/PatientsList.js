@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 
 const PatientsList = () => {
   const navigation = useNavigation();
@@ -12,7 +12,7 @@ const PatientsList = () => {
     // Fetch the list of patients from the database
     const fetchPatients = async () => {
       try {
-        const response = await fetch('http://192.168.196.55:3001/patient');
+        const response = await fetch('http://192.168.1.3:3001/patient');
         const data = await response.json();
         setPatients(data);
         setFilteredPatients(data);

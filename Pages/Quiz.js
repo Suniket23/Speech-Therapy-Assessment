@@ -22,7 +22,7 @@ import {englishData} from './EnglishQuestions';
 import QuestionItem from './QuestionItem';
 const {height, width} = Dimensions.get('window');
 const App = ({route}) => {
-  const serverIP = "http://192.168.196.55:3001/";
+  const serverIP = "http://192.168.1.3:3001/";
   const [currentIndex, setCurrentIndex] = useState(1);
   // const [questions, setQuestions] = useState(englishData);
   const currentDate = new Date();
@@ -82,7 +82,7 @@ const App = ({route}) => {
   };
   const onSubmit=async()=>{
     console.log("fun=",1);
-    fetch("http://192.168.196.55:3001/Quiz", {
+    fetch("http://192.168.1.3:3001/Quiz", {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

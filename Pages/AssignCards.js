@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useRoute } from '@react-navigation/native';
 import { LogBox } from "react-native";
 import { StyleSheet } from 'react-native';
 import { NativeBaseProvider, VStack, Select, CheckIcon, Button } from "native-base";
 import MIcon from "react-native-vector-icons/MaterialIcons";
+import { Alert } from "react-native";
 
+LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 function AssignCards({ navigation }) {
-  LogBox.ignoreLogs(["EventEmitter.removeListener"]);
-
+  const route=useRoute();
+  const {patientId}=route.params.patientId;
+  console.log("patientid is = ",patientId);
+  
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -17,31 +22,60 @@ function AssignCards({ navigation }) {
 // ...
 
 // Fetch categories and subcategories from the database
+const fetchCategories = async () => {
+  try {
+    const response = await fetch('http://192.168.1.3:3001/card');
+    const data = await response.json();
+    setCategories(data.map(card => card.mainCategory));
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+};
+
+const fetchSubCategories = async () => {
+  try {
+    const response = await fetch('http://192.168.1.3:3001/card');
+    const data = await response.json();
+    setSubCategories(data.map(card => card.subCategory));
+  } catch (error) {
+    console.error('Error fetching subcategories:', error);
+  }
+};
 useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('http://192.168.196.55:3001/card');
-      const data = await response.json();
-      setCategories(data.map(card => card.mainCategory));
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  const fetchSubCategories = async () => {
-    try {
-      const response = await fetch('http://192.168.196.55:3001/card');
-      const data = await response.json();
-      setSubCategories(data.map(card => card.subCategory));
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-    }
-  };
-
   fetchCategories();
   fetchSubCategories();
 }, []);
 
+const onAssign=()=>{
+  fetch('http://192.168.1.3:3001/AssignCards', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              patientId:patientId,
+              mainCategory:selectedCategory,
+              subCategory:selectedSubCategory
+            })
+            }).then(response => response.json())
+              .then(json=>console.log(json))
+              .catch(error => console.error(error))
+            console.log(`main category is ${selectedCategory}`);
+            console.log(`patientid is ${patientId}`);
+            console.log(`subcategory is ${selectedSubCategory}`);
+
+            Alert.alert(
+              "Data Submitted",
+              "Record added successfully",                   
+              [
+                {
+                  text: "Ok",
+                  style: "cancel"
+                },                     
+              ]
+            );
+}
 
 // ...
 
@@ -82,7 +116,7 @@ useEffect(() => {
           ))}
         </Select>
 
-        <Button colorScheme='green' endIcon={<MIcon name="assignment" size={40} color="#FFF" />}>
+        <Button onPress={onAssign} colorScheme='green' endIcon={<MIcon name="assignment" size={40} color="#FFF" />}>
           Assign
         </Button>
       </VStack>

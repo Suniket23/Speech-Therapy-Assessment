@@ -20,7 +20,7 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Mysqlop@123',
+    password:'Pastaway$33',
     database:'speechtherapyapplication'
 })  
 
@@ -197,9 +197,8 @@ app.get('/patient',function(req,res){
 app.post('/Register',function(req,res){
     const obj=req.body;
     console.log(req);
-    var sql = "INSERT INTO patient (name,email,password,dob) VALUES ?";
-    var values=[[obj.name.value,obj.email.value,obj.password.value,obj.dob]]
-    pool.query(sql,[values],function(err,results){
+    var sql = `INSERT INTO patient (name,email,password,dob) VALUES (?,?,?,?)`;
+    pool.query(sql,[obj.name.value,obj.email.value,obj.password.value,obj.dob],function(err,results){
         if(err)
            throw err;
 
@@ -344,6 +343,22 @@ app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
             res.send(results);
     })
 
+})
+app.post('/AssignCards',function(req,res){
+    // const obj=JSON.parse(JSON.stringify(req.body));
+    const pid=req.body.patientId;
+    const cat=req.body.mainCategory;
+    const subcat=req.body.subCategory;
+    console.log("pid is = ",pid);
+    console.log("category is= ",cat);
+    console.log("subcategory is = ",subcat);
+    const sql = `INSERT INTO learns (patientID,Category,subCategory) VALUES (?,?,?)`;
+    pool.query(sql, [pid,cat,subcat], (error, res) => {
+        if (error) {
+          console.error(error);
+        //   res.status(500).send('Error inserting user');
+        }
+    });
 })
 app.post('/Dcard',function(req,res){
     const value=req.body.cardID;
