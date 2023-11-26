@@ -109,7 +109,7 @@ const Assessment=()=>{
         setInfo(data);
         console.log("audio=",audio);
         // alert(Option1);
-        fetch('http://192.168.1.3:3001/assess', {
+        fetch('http://192.168.196.55:3001/assess', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
