@@ -19,7 +19,7 @@ export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
-  const [dob, setdob] = useState("01-01-2023")
+  const [dob, setdob] = useState("2023-01-01")
 
   const onSignUpPressed = () => {
     const nameError = nameValidator(name.value)
@@ -34,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
       return
     }
     else{
-      fetch('http://192.168.196.55:3001/Register',{
+      fetch('http://192.168.66.55:3001/Register',{
         method:'POST',
         headers: {
           'Accept': 'application/json',
