@@ -5,81 +5,103 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeBaseProvider,  VStack} from "native-base";
 import Sound from 'react-native-sound';
 import {useNavigation} from "@react-navigation/native";
-const Guest=({route})=>{
-    const navigation = useNavigation();
-    const uid=route.params.uid;
-    console.log("id is ",uid);
-    const serverIP = "http://192.168.1.3:3001/";
-    const [data,setData] = useState([]);
-    const getData = async() => {
-       
-        fetch(serverIP + 'card')
-        .then(response => response.json())
-        .then(results => {console.log("results = ",results); setData(results)});
-        
+
+const Guest = ({ route }) => {
+  const navigation = useNavigation();
+  const uid = route.params.uid;
+  console.log("id is ", uid);
+  const serverIP = "http://192.168.196.55:3001/";
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    try {
+      const response = await fetch(serverIP + `learns/${uid}`);
+      const results = await response.json();
+
+      console.log("results = ", results);
+
+      if (results && results.cards) {
+        setData(results.cards);
+      } else {
+        console.log("No card data found");
+        setData([]); // Set to an empty array if no card data is found
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    useEffect(() => {
-        getData();
-    },[])
+  };
 
-    const playSound = (item) => {
-        sound1 = new Sound(item.cardAudio,'', (error, _sound) => {
-          if (error) {
-            alert('error' + error.message);
-            return;
-          }
-          sound1.play(() => {
-            sound1.release();
-          });
-        });
+  useEffect(() => {
+    getData();
+  }, [uid]); // Trigger the fetch when the UID changes
+
+  const playSound = (item) => {
+    sound1 = new Sound(item.cardAudio, '', (error, _sound) => {
+      if (error) {
+        alert('error' + error.message);
+        return;
       }
-    const renderItem = ({item}) =>{
-        return(
-          <View style={styles.card}>
-            <View style={styles.imgContainer}>
-              <Image
-              style={styles.imgStyle}
-              resizeMode="cover"
-              source={{uri:item.cardImg}}
-              alt="img1"
-              />
-            </View>
-            <View style={styles.dataContainer}>
-            <TouchableOpacity onPress={() => playSound(item)}>
-              <Text style={styles.buttonPlay}>Play</Text>
-            </TouchableOpacity>
-              {/* <Text>{item.audioURL}</Text> */}
-              {/* <Text style={{ fontFamily: 'Poppins_600SemiBold', fontSize: 14}}  color="black"> {item.imageURL} </Text> */}
-            </View>
-          </View>
-        );
-      }
+      sound1.play(() => {
+        sound1.release();
+      });
+    });
+  };
+
+  const renderItem = ({ item }) => {
     return (
-            
+      <View style={styles.card}>
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.imgStyle}
+            resizeMode="cover"
+            source={{ uri: item.cardImg }}
+            alt="img1"
+          />
+        </View>
+        <View style={styles.dataContainer}>
+          <TouchableOpacity onPress={() => playSound(item)}>
+            <Text style={styles.buttonPlay}>Play</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
-            <View style={styles.mainContainer}>
-            
-              <Button
-                mode="outlined"
-                colorScheme='gray'
-                onPress={() =>
-                  navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'StartScreen' }],
-                  })
-                }
-              >
-                Logout
-              </Button>
+  return (
+    <View style={styles.mainContainer}>
+      <Button
+        mode="outlined"
+        colorScheme="gray"
+        onPress={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'StartScreen' }],
+          })
+        }
+      >
+        Logout
+      </Button>
 
-             {/* <Text style={{color:"black"}}>Take assessment</Text> */}
-             <TouchableOpacity style={styles.appButtonContainer} onPress={()=>navigation.navigate('Quiz',{uid:uid})}>
-              <Text style={styles.appButtonText}>Give assessment</Text>
-             </TouchableOpacity>
-              {data && <FlatList data={data} renderItem={renderItem}showsVerticalScrollIndicator={false} keyExtractor={(item) => item.cardID.toString()} />}
-            </View>
-    )
-}
+      <TouchableOpacity
+        style={styles.appButtonContainer}
+        onPress={() => navigation.navigate('Quiz', { uid: uid })}
+      >
+        <Text style={styles.appButtonText}>Give assessment</Text>
+      </TouchableOpacity>
+
+      {data.length > 0 ? (
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.cardID.toString()}
+        />
+      ) : (
+        <Text>No cards available for this patient.</Text>
+      )}
+    </View>
+  );
+};
 
 const styles=StyleSheet.create({
   textStyle:{

@@ -20,9 +20,10 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Pastaway$33',
+    password:'Mysqlop@123',
     database:'speechtherapyapplication'
 })  
+
 
   
 
@@ -344,22 +345,9 @@ app.post('/getImageAudio',upload1.single('category'),(req,res,next) => {
     })
 
 })
-app.post('/AssignCards',function(req,res){
-    // const obj=JSON.parse(JSON.stringify(req.body));
-    const pid=req.body.patientId;
-    const cat=req.body.mainCategory;
-    const subcat=req.body.subCategory;
-    console.log("pid is = ",pid);
-    console.log("category is= ",cat);
-    console.log("subcategory is = ",subcat);
-    const sql = `INSERT INTO learns (patientID,Category,subCategory) VALUES (?,?,?)`;
-    pool.query(sql, [pid,cat,subcat], (error, res) => {
-        if (error) {
-          console.error(error);
-        //   res.status(500).send('Error inserting user');
-        }
-    });
-})
+
+
+
 app.post('/Dcard',function(req,res){
     const value=req.body.cardID;
     console.log("cardID is ",value);
@@ -382,6 +370,60 @@ app.post('/storeData',function(req,res){
         }
     });
 })
+
+app.post('/AssignCards',function(req,res){
+    // const obj=JSON.parse(JSON.stringify(req.body));
+    const pid=req.body.patientId;
+    const cat=req.body.mainCategory;
+    const subcat=req.body.subCategory;
+    console.log("pid is = ",pid);
+    console.log("category is= ",cat);
+    console.log("subcategory is = ",subcat);
+    const sql = `INSERT INTO learns (patientID,Category,subCategory) VALUES (?,?,?)`;
+    pool.query(sql, [pid,cat,subcat], (error, res) => {
+        if (error) {
+          console.error(error);
+        //   res.status(500).send('Error inserting user');
+        }
+    });
+})  
+
+app.get('/learns/:patientID', (req, res) => {
+  const patientID = req.params.patientID;
+
+  console.log(`got cards req for ${patientID}`);
+console.log('Executing query:', 'SELECT * FROM learns WHERE patientID = ?', [patientID]);
+  pool.query('SELECT * FROM learns WHERE patientID = ?', [patientID], (err, learnsResults) => {
+  if (err) {
+    console.error('Error executing learns query:', err);
+    return res.status(500).json({ error: 'Error fetching learns data', details: err.message });
+  }
+
+    if (!learnsResults || learnsResults.length === 0) {
+      console.log('No learns data found for patient ID:', patientID);
+      return res.status(404).json({ error: 'No learns data found for patient ID' });
+    }
+
+    const categories = learnsResults.map(learn => learn.category);
+    const subcategories = learnsResults.map(learn => learn.subCategory);
+    console.log('Categories:', categories);
+    console.log('Subcategories:', subcategories);
+
+    // Fetch cards based on categories and subcategories
+    pool.query('SELECT * FROM card WHERE mainCategory IN (?) AND subCategory IN (?)', [categories, subcategories], (err, cardResults) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error fetching card data', details: err.message });
+      }
+
+      res.json({ learns: learnsResults, cards: cardResults });
+    });
+  });
+});
+
+
+
+
 
 app.listen(3001, () => {
     console.log('Go to http://localhost:3001/insert so you can see the data.');

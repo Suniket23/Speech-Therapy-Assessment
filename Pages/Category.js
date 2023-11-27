@@ -18,7 +18,7 @@ function Category(props) {
   const [data,setData] = useState([]); 
   const [subData,setSubData] = useState([]); 
   const obj = {title : "",subTitle : ""};
-  const serverIP = "http://192.168.1.3:3001/";
+  const serverIP = "http://192.168.196.55:3001/";
   const onTextChange = (txt) => {
     setText(txt);
   }
