@@ -36,8 +36,8 @@ function Patient({navigation}){
          Notify Assessment
         </Button>
         
-        <Button w={240} height={140} padding={45} colorScheme='yellow' endIcon={<MIcon name="message" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Feedback')}>
-          Give Feedback Message
+        <Button w={240} height={140} padding={45} colorScheme='yellow' endIcon={<MIcon name="message" size={40} color= "#FFF"/>} onPress={() => navigation.navigate('Progress')}>
+          View progress
         </Button>
         
       </VStack>

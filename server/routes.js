@@ -20,7 +20,7 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Mysqlop@123',
+    password:'Pastaway$33',
     database:'speechtherapyapplication'
 })  
 
@@ -191,6 +191,14 @@ app.get('/patient',function(req,res){
         if(err)
            throw err;
         console.log("results of patient= ",results);
+        res.send(results);
+    })
+})
+app.get('/progress',function(req,res){
+    pool.query('select assessmentID,score from progress',function(err,results,field){
+        if(err)
+          throw err;
+        console.log("resultof progress= ",results);
         res.send(results);
     })
 })

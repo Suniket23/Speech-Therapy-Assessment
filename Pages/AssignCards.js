@@ -25,7 +25,7 @@ function AssignCards({ navigation }) {
 // Fetch categories and subcategories from the database
 const fetchCategories = async () => {
   try {
-    const response = await fetch('http://192.168.66.55:3001/card');
+    const response = await fetch('http://192.168.1.4:3001/card');
     const data = await response.json();
     setCategories(data.map(card => card.mainCategory));
   } catch (error) {
@@ -35,7 +35,7 @@ const fetchCategories = async () => {
 
 const fetchSubCategories = async () => {
   try {
-    const response = await fetch('http://192.168.66.55:3001/card');
+    const response = await fetch('http://192.168.1.4:3001/card');
     const data = await response.json();
     setSubCategories(data.map(card => card.subCategory));
   } catch (error) {
@@ -48,7 +48,7 @@ useEffect(() => {
 }, []);
 
 const onAssign=()=>{
-  fetch('http://192.168.66.55:3001/AssignCards', {
+  fetch('http://192.168.1.4:3001/AssignCards', {
             method: 'POST',
             headers: {
               'Accept': 'application/json',

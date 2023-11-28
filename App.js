@@ -41,7 +41,7 @@ import PatientsList from './Pages/PatientsList';
 import Cards from './Pages/Cards';
 import Patient from './Pages/Patient';
 import AssignCards from './Pages/AssignCards';
-
+import Progress from './Pages/Progress';
  
 const Stack = createNativeStackNavigator();
 
@@ -79,7 +79,8 @@ return(
           <Stack.Screen name="Assessment" component={Assessment} />
           <Stack.Screen name="Patient" component={Patient} />
           <Stack.Screen name="AssignCards" component={AssignCards} />
-
+          <Stack.Screen name="Progress" component={Progress} />
+          {/* <Stack.Screen name="AssignCards" component={AssignCards} /> */}
         </Stack.Navigator>
       </NavigationContainer> 
 

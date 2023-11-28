@@ -12,7 +12,7 @@ const PatientsList = () => {
     // Fetch the list of patients from the database
     const fetchPatients = async () => {
       try {
-        const response = await fetch('http://192.168.66.55:3001/patient');
+        const response = await fetch('http://192.168.1.4:3001/patient');
         const data = await response.json();
         setPatients(data);
         setFilteredPatients(data);
