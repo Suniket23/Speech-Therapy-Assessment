@@ -12,10 +12,10 @@ const MarksDisplayScreen = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://192.168.1.4:3001/progress');
+      const response = await fetch('http://192.168.4.55:3001/progress');
       const data = await response.json();
       setMarksData(data);
-      console.log("data=",data);
+      console.log("data=", data);
     } catch (error) {
       console.error('Error fetching data:', error.message);
     }
@@ -29,7 +29,7 @@ const MarksDisplayScreen = () => {
           <Text style={styles.label}>assessmentID:</Text>
           <Text style={styles.value}>{data.assessmentID}</Text>
           <Text style={styles.label}>Marks:</Text>
-          <Text style={styles.value}>{data.score/25*100}%</Text>
+          <Text style={styles.value}>{data.score / 25 * 100}%</Text>
         </View>
       ))}
     </ScrollView>

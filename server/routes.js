@@ -20,9 +20,10 @@ var upload1 = multer();
 const pool = mysql.createPool({
     host:'localhost',
     user:'root',
-    password:'Pastaway$33',
+    password:'Mysqlop@123',
     database:'speechtherapyapplication'
 })  
+
 
 
   
@@ -194,14 +195,7 @@ app.get('/patient',function(req,res){
         res.send(results);
     })
 })
-app.get('/progress',function(req,res){
-    pool.query('select assessmentID,score from progress',function(err,results,field){
-        if(err)
-          throw err;
-        console.log("resultof progress= ",results);
-        res.send(results);
-    })
-})
+
 
 app.post('/Register',function(req,res){
     const obj=req.body;
@@ -399,13 +393,14 @@ app.post('/AssignCards',function(req,res){
 app.get('/learns/:patientID', (req, res) => {
   const patientID = req.params.patientID;
 
-  console.log(`got cards req for ${patientID}`);
-console.log('Executing query:', 'SELECT * FROM learns WHERE patientID = ?', [patientID]);
+  console.log(`Got cards req for ${patientID}`);
+  console.log('Executing query:', 'SELECT * FROM learns WHERE patientID = ?', [patientID]);
+
   pool.query('SELECT * FROM learns WHERE patientID = ?', [patientID], (err, learnsResults) => {
-  if (err) {
-    console.error('Error executing learns query:', err);
-    return res.status(500).json({ error: 'Error fetching learns data', details: err.message });
-  }
+    if (err) {
+      console.error('Error executing learns query:', err);
+      return res.status(500).json({ error: 'Error fetching learns data', details: err.message });
+    }
 
     if (!learnsResults || learnsResults.length === 0) {
       console.log('No learns data found for patient ID:', patientID);
@@ -413,24 +408,102 @@ console.log('Executing query:', 'SELECT * FROM learns WHERE patientID = ?', [pat
     }
 
     const categories = learnsResults.map(learn => learn.category);
-    const subcategories = learnsResults.map(learn => learn.subCategory);
+    const subCategories = learnsResults.map(learn => learn.subCategory);
+
     console.log('Categories:', categories);
-    console.log('Subcategories:', subcategories);
+    console.log('Subcategories:', subCategories);
 
     // Fetch cards based on categories and subcategories
-    pool.query('SELECT * FROM card WHERE mainCategory IN (?) AND subCategory IN (?)', [categories, subcategories], (err, cardResults) => {
+    pool.query(
+      'SELECT * FROM card WHERE mainCategory IN (?) AND subCategory IN (?)',
+      [categories, subCategories],
+      (err, cardResults) => {
+        if (err) {
+          console.error('Error fetching card data:', err);
+          return res.status(500).json({ error: 'Error fetching card data', details: err.message });
+        }
+
+        // Send response with required information
+        res.json({ learns: learnsResults, cards:cardResults });
+      }
+    );
+  });
+});
+app.post('/assessment', (req, res) => {
+  const { patientID, category, subCategory } = req.body;
+
+  // Perform the necessary actions to store data in the "assessment" table
+  pool.query(
+    'INSERT INTO assessment (patientID, category, subCategory) VALUES (?, ?, ?)',
+    [patientID, category, subCategory],
+    (err, results) => {
       if (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Error fetching card data', details: err.message });
+        console.error('Error storing data in assessment table:', err);
+        return res.status(500).json({ error: 'Error storing data in assessment table', details: err.message });
       }
 
-      res.json({ learns: learnsResults, cards: cardResults });
-    });
-  });
+      console.log('Data stored in assessment table:', category, subCategory);
+      res.status(200).json({ message: 'Data stored in assessment table successfully' });
+    }
+  );
 });
 
 
+app.post('/fetchRandomCards', async (req, res) => {
+  try {
+    const { learnsData, count } = req.body;
+    console.log('Received fetchRandomCards request:', learnsData, count);
+    // Extract categories and subcategories from learnsData
+    const categories = learnsData.map((learn) => learn.category);
+    const subcategories = learnsData.map((learn) => learn.subCategory);
 
+    // Fetch random cards based on categories and subcategories
+    const randomCards = await pool.query(
+      'SELECT * FROM card WHERE mainCategory IN (?) AND subCategory IN (?) ORDER BY RAND() LIMIT ?',
+      [categories, subcategories, count]
+    );
+    console.log('Sending random cards response:', randomCards);
+    res.json({ cards: randomCards });
+  } catch (error) {
+     console.error('Error fetching random cards:', error);
+    res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+  }
+});
+
+app.post('/submitQuiz', (req, res) => {
+  // Assuming the request body has properties: score, patientid, submitDate
+  const { score, patientid, submitDate } = req.body;
+
+  // TODO: Store the quiz submission details in the "assessment" table
+//   const assessmentID = nextAssessmentID++;
+  const doctorID = 1001; // Replace with the actual doctorID
+  // ... Add other attributes as needed for the assessment table
+
+  console.log('Quiz Submission Data:', { patientid, score, submitDate });
+
+  // Send a response (you can customize this based on your needs)
+  res.json({ success: true, message: 'Quiz submitted successfully.' });
+});
+
+// app.get('/progress',function(req,res){
+//     pool.query('select assessmentID,score from progress',function(err,results,field){
+//         if(err)
+//           throw err;
+//         console.log("resultof progress= ",results);
+//         res.send(results);
+//     })
+// })
+app.get('/progress', (req, res) => {
+  // For demonstration purposes, I'm providing sample marks data
+  const marksData = [
+    { assessmentID: 1, score: 20 },
+    { assessmentID: 2, score: 15 },
+    // Add more data as needed
+  ];
+
+  // Send the marks data as a JSON response
+  res.json(marksData);
+});
 
 
 app.listen(3001, () => {
