@@ -118,6 +118,10 @@ const getTextScore = () => {
 
 const onSubmit = async () => {
   try {
+    // Extract categories and subcategories from the questions
+    const categories = data.map(item => item.category).join(' ');
+    const subcategories = data.map(item => item.subcategory).join(' ');
+
     // Submit quiz data
     const responseQuiz = await fetch('http://192.168.4.55:3001/submitQuiz', {
       method: 'POST',
@@ -129,6 +133,8 @@ const onSubmit = async () => {
         score: getTextScore(),
         patientid: uid,
         submitDate: currDate,
+        categories: categories,
+        subcategories: subcategories,
       }),
     });
 
@@ -142,6 +148,7 @@ const onSubmit = async () => {
     console.error('Error submitting quiz:', error);
   }
 };
+
 
 
 
