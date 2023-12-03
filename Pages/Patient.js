@@ -121,10 +121,11 @@ const fetchPatientDetails = async () => {
           padding={45}
           colorScheme="yellow"
           endIcon={<MIcon name="message" size={40} color="#FFF" />}
-          onPress={() => navigation.navigate('Progress')}
+          onPress={() => navigation.navigate('Progress', { patientID: patientId })}
         >
-          View progress
+          View Progress
         </Button>
+
       </VStack>
     </NativeBaseProvider>
   );

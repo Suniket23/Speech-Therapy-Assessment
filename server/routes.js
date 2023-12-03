@@ -474,16 +474,47 @@ app.post('/submitQuiz', (req, res) => {
   // Assuming the request body has properties: score, patientid, submitDate
   const { score, patientid, submitDate } = req.body;
 
-  // TODO: Store the quiz submission details in the "assessment" table
-//   const assessmentID = nextAssessmentID++;
-  const doctorID = 1001; // Replace with the actual doctorID
-  // ... Add other attributes as needed for the assessment table
+  // Fetch learns data based on patientid
+  pool.query('SELECT * FROM learns WHERE patientID = ?', [patientid], (err, learnsResults) => {
+    if (err) {
+      console.error('Error executing learns query:', err);
+      return res.status(500).json({ error: 'Error fetching learns data', details: err.message });
+    }
 
-  console.log('Quiz Submission Data:', { patientid, score, submitDate });
+    if (!learnsResults || learnsResults.length === 0) {
+      console.log('No learns data found for patient ID:', patientid);
+      return res.status(404).json({ error: 'No learns data found for patient ID' });
+    }
 
-  // Send a response (you can customize this based on your needs)
-  res.json({ success: true, message: 'Quiz submitted successfully.' });
+    // Extract categories and subcategories from learnsResults
+    const categories = learnsResults.map(learn => learn.category).join(' ');
+    const subcategories = learnsResults.map(learn => learn.subCategory).join(' ');
+    console.log('Submit Date :',submitDate);
+    console.log('Categories:', categories);
+    console.log('Subcategories:', subcategories);
+
+    // Store quiz submission details in the progress table
+    pool.query(
+      'INSERT INTO progress (patientID, score, submitDate, category, subCategory) VALUES (?, ?, ?, ?, ?)',
+      [patientid, score, submitDate, categories, subcategories],
+      (insertErr, insertResults) => {
+        if (insertErr) {
+          console.error('Error inserting quiz submission data into progress table:', insertErr);
+          return res.status(500).json({ error: 'Error inserting data into progress table', details: insertErr.message });
+        }
+
+        console.log('Quiz Submission Data inserted into progress table:', insertResults);
+
+        // Send a response (you can customize this based on your needs)
+        res.json({ success: true, message: 'Quiz submitted successfully.' });
+      }
+    );
+  });
 });
+
+
+
+
 
 // app.get('/progress',function(req,res){
 //     pool.query('select assessmentID,score from progress',function(err,results,field){
@@ -493,16 +524,37 @@ app.post('/submitQuiz', (req, res) => {
 //         res.send(results);
 //     })
 // })
-app.get('/progress', (req, res) => {
-  // For demonstration purposes, I'm providing sample marks data
-  const marksData = [
-    { assessmentID: 1, score: 20 },
-    { assessmentID: 2, score: 15 },
-    // Add more data as needed
-  ];
+// app.get('/progress', (req, res) => {
+//   // For demonstration purposes, I'm providing sample marks data
+//   const marksData = [
+//     { assessmentID: 1, score: 20 },
+//     { assessmentID: 2, score: 15 },
+//     // Add more data as needed
+//   ];
 
-  // Send the marks data as a JSON response
-  res.json(marksData);
+//   // Send the marks data as a JSON response
+//   res.json(marksData);
+// });
+
+// Assume you have a MySQL query for fetching progress data for a specific patient
+app.get('/progress/:patientId', (req, res) => {
+  const patientId = req.params.patientId;
+
+  // Execute your database query here to get progress data for the specified patient
+  pool.query('SELECT * FROM progress WHERE patientID = ?', [patientId], (err, progressResults) => {
+    if (err) {
+      console.error('Error executing progress query:', err);
+      return res.status(500).json({ error: 'Error fetching progress data', details: err.message });
+    }
+
+    if (!progressResults || progressResults.length === 0) {
+      console.log('No progress data found for patient ID:', patientId);
+      return res.status(404).json({ error: 'No progress data found for patient ID' });
+    }
+
+    // Send the progress data as a response
+    res.json(progressResults);
+  });
 });
 
 
