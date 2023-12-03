@@ -1,114 +1,157 @@
-// import { Button, Center,FlatList,Image } from "native-base";
-// import React, { useEffect, useState } from "react";
-// import {View,Text,StyleSheet,TextInput,textStyle, TouchableOpacity, Dimensions} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { NativeBaseProvider,  VStack} from "native-base";
-// import Sound from 'react-native-sound';
-// const {height,width}=Dimensions.addEventListener
-import {useNavigation} from "@react-navigation/native";
-import {Phoneno} from "./TakeAssess";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-  Modal,
-} from 'react-native';
-import { useEffect } from 'react';
-import React, {useRef, useState} from 'react';
-import {englishData} from './EnglishQuestions';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { NativeBaseProvider } from 'native-base';
 import QuestionItem from './QuestionItem';
-const {height, width} = Dimensions.get('window');
-const App = ({route}) => {
-  const serverIP = "http://192.168.1.4:3001/";
+
+const { height, width } = Dimensions.get('window');
+
+const Quiz = ({ route }) => {
+  const serverIP = 'http://192.168.4.55:3001/';
   const [currentIndex, setCurrentIndex] = useState(1);
-  // const [questions, setQuestions] = useState(englishData);
   const currentDate = new Date();
   const day = currentDate.getDate();
-  const month = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+  const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();
-  // Creating a formatted date string
   const currDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
 
-  const uid=route.params.uid;
+  const uid = route.params.uid;
   const listRef = useRef();
   const [modalVisible, setModalVisible] = useState(false);
-  const [data,setData]=useState([]);
-  // const [marks,getmarks]=useState(0);
-  const getData = async() => {
-       
-            fetch(serverIP + 'assess')
-            .then(response => response.json())
-            .then(results => {setData(results);console.log("results = ",results);});
-        }
-        useEffect(() => {
-          console.log("render",uid)
-            getData();
-        },[])
+  const [data, setData] = useState([]);
 
-  const OnSelectOption = (index, x) => {
-    console.log("index=",index);
-    console.log("x=",x);
-    const tempData = data;
-    console.log("temp=",temp);
-    tempData.map((item, ind) => {
-      if (index == ind) {
-        if (item.marked !== -1) {
-          item.marked = -1;
-        } else {
-          item.marked = x;
-        }
-      }
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
+
+const fetchQuestions = async () => {
+  try {
+    const response = await fetch(serverIP + `learns/${uid}`);
+    const learnsData = await response.json();
+
+    // Ensure that learnsData is an object with the 'learns' property
+    if (!learnsData || typeof learnsData !== 'object' || !Array.isArray(learnsData.learns)) {
+      console.error('Invalid learns data format:', learnsData);
+      return; // or handle the error appropriately
+    }
+
+    // Fetch random cards based on the learnsData (up to a maximum of 15)
+    const cardsResponse = await fetch(serverIP + 'fetchRandomCards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        learnsData: learnsData.learns,
+        count: 5, // Adjust the maximum number of cards as needed
+      }),
     });
-    let temp = [];
-    tempData.map(item => {
-      temp.push(item);
+
+    const cardsData = await cardsResponse.json();
+    console.log('Fetched cards data:', cardsData);
+
+    // Generate questions from the fetched cards
+    const questions = cardsData.cards.map((card) => {
+      // Extract cardImg and other card images
+      const { cardImg, cardID, cardAudio, mainCategory, subCategory } = card;
+      const otherCardImages = cardsData.cards
+        .filter((otherCard) => otherCard.cardID !== cardID)
+        .map((otherCard) => otherCard.cardImg);
+
+      // Shuffle the array of other card images (random order)
+      const shuffledOtherCardImages = otherCardImages.sort(() => Math.random() - 0.5);
+
+      // Select two other card images as options (excluding the correctOption)
+      const options = shuffledOtherCardImages.slice(0, 2);
+      const correctOption = cardImg;
+
+      // Shuffle the options array to randomize the order
+      const shuffledOptions = [correctOption, ...options].sort(() => Math.random() - 0.5);
+
+      return {
+        cardId: cardID,
+        audio: cardAudio,
+        options: shuffledOptions,
+        correctOption: correctOption,
+        marked: -1,
+      };
     });
-    setData(temp);
-  };
-  const getTextScore = () => {
-    let marks = 0;
-    data.map(item => {
+
+    // Set the generated questions in the state
+    setData(questions);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+  }
+};
+
+
+
+const OnSelectOption = (index, x) => {
+  const tempData = [...data];
+  tempData.map((item, ind) => {
+    if (index === ind) {
       if (item.marked !== -1) {
-        if(item.marked==item.correct_option){
-        marks = marks + 5;
-        }
+        item.marked = -1;
+      } else {
+        item.marked = x;
       }
-    });
-    // getmarks(marks);
-    return marks;
-  };
-  const onSubmit=async()=>{
-    console.log("fun=",1);
-    fetch("http://192.168.1.4:3001/Quiz", {
+    }
+  });
+  setData(tempData);
+};
+
+const getTextScore = () => {
+  let marks = 0;
+  data.forEach(item => {
+    const correctIndex = item.options.indexOf(item.correctOption);
+    if (item.marked !== -1) {
+      console.log(`Marked: ${item.marked}, Correct: ${correctIndex + 1}`);
+      if (item.marked == correctIndex + 1) {
+        marks += 10; // +10 for correct answer
+      }
+      // You can add a different logic for negative marking if needed
+    }
+  });
+
+  // Ensure that the maximum score is 50
+  return Math.min(marks, 50);
+};
+
+const onSubmit = async () => {
+  try {
+    // Submit quiz data
+    const responseQuiz = await fetch('http://192.168.4.55:3001/submitQuiz', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        score:getTextScore(),
-        patientid:uid,
-        submitDate:currDate,
-      })
-    }).then(response => response.json())
-      .then(json=>console.log(json))
-      .catch(error => console.error(error))
-      setModalVisible(true);
+        score: getTextScore(),
+        patientid: uid,
+        submitDate: currDate,
+      }),
+    });
+
+    // Fetch progress data after submitting the quiz
+    const responseProgress = await fetch('http://192.168.4.55:3001/progress');
+    const progressData = await responseProgress.json();
+    console.log('Fetched progress data:', progressData);
+
+    setModalVisible(true);
+  } catch (error) {
+    console.error('Error submitting quiz:', error);
   }
+};
+
+
+
 
   const reset = () => {
-    const tempData = data;
-    tempData.map((item, ind) => {
+    const tempData = [...data];
+    tempData.map(item => {
       item.marked = -1;
     });
-    let temp = [];
-    tempData.map(item => {
-      temp.push(item);
-    });
-    setData(temp);
+    setData(tempData);
   };
   return (
     <View style={{flex: 1}}>
@@ -281,7 +324,7 @@ const App = ({route}) => {
                 marginTop: 20,
                 color: 'green',
               }}>
-              {getTextScore()}{'/'+data.length*5}
+              {getTextScore()}{'/'+data.length*10}
             </Text>
             <TouchableOpacity
               style={{
@@ -304,4 +347,4 @@ const App = ({route}) => {
     </View>
   );
 };
-export default App;
+export default Quiz;

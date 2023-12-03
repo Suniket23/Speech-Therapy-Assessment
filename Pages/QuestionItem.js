@@ -7,8 +7,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'native-base';
 const {height, width} = Dimensions.get('window');
 const QuestionItem = ({data, selectedOption}) => {
+  console.log('Data in QuestionItem:', data);
     const playSound = (item) => {
-              sound1 = new Sound(item.audio,'', (error, _sound) => {
+  if (!item.audio) {
+    console.error('Audio file path is undefined or null.');
+    return;
+  }
+
+  const sound1 = new Sound(item.audio, '', (error, _sound) => {
                 if (error) {
                   alert('error' + error.message);
                   return;
@@ -19,29 +25,32 @@ const QuestionItem = ({data, selectedOption}) => {
               });
             }
   return (
-    <View style={{width: width}}>
+    <View style={{width: width,marginTop:30}}>
         <TouchableOpacity style={styles.appButtonContainer} onPress={() => playSound(data)}>
-            <Text style={styles.appButtonText}>Play Song</Text>
+            <Text style={styles.appButtonText}>Play Sound</Text>
         </TouchableOpacity>
-      <View style={{marginTop: 10}}>
+      <View style={{marginTop: 35}}>
         <FlatList
-          data={[data.option1,data.option2,data.option3]}
-          renderItem={({item, index}) => {
-            return (
-                <View style={styles.card}>
-                    <TouchableOpacity style={[styles.card1,{backgroundColor:data.marked==index+1?'purple':'#fff'}]}
-                     onPress={()=>selectedOption(index + 1)}>
-                    <Image
-                        style={styles.imgStyle}
-                        resizeMode="cover"
-                        source={{uri:item}}
-                        alt="image"
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-          }}
-        />
+  data={data.options} // Use data.options instead of [data.option1, data.option2, data.option3]
+  renderItem={({ item, index }) => {
+    return (
+      <View style={styles.card}>
+        <TouchableOpacity
+          style={[
+            styles.card1,
+            { backgroundColor: data.marked === index + 1 ? 'purple' : '#fff' },
+          ]}
+          onPress={() => selectedOption(index + 1)}>
+          <Image
+            style={styles.imgStyle}
+            resizeMode="cover"
+            source={{ uri: item }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }}
+/>
       </View>
     </View>
   );
@@ -58,7 +67,7 @@ const styles=StyleSheet.create({
         // backgroundColor:"#fff",
         borderRadius:5,
         marginVertical:0,
-        // display:"flex",
+        // display:"flex",  
         flexDirection:"column",
         // justifyContent:"space-between",
         marginLeft:50,
