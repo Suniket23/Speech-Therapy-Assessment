@@ -429,6 +429,47 @@ app.get('/learns/:patientID', (req, res) => {
     );
   });
 });
+
+app.get('/learns2/:patientID', (req, res) => {
+  const patientID = req.params.patientID;
+
+  console.log(`Got cards req for ${patientID}`);
+  console.log('Executing query:', 'SELECT * FROM learns WHERE patientID = ?', [patientID]);
+
+  pool.query('SELECT * FROM learns WHERE patientID = ?', [patientID], (err, learnsResults) => {
+    if (err) {
+      console.error('Error executing learns query:', err);
+      return res.status(500).json({ error: 'Error fetching learns data', details: err.message });
+    }
+
+    if (!learnsResults || learnsResults.length === 0) {
+      console.log('No learns data found for patient ID:', patientID);
+      return res.status(404).json({ error: 'No learns data found for patient ID' });
+    }
+
+    const categories = learnsResults.map(learn => learn.category);
+    const subCategories = learnsResults.map(learn => learn.subCategory);
+
+    console.log('Categories:', categories);
+    console.log('Subcategories:', subCategories);
+
+    // Fetch cards based on categories and subcategories
+    pool.query(
+      'SELECT * FROM card WHERE mainCategory IN (?) AND subCategory IN (?)',
+      [categories, subCategories],
+      (err, cardResults) => {
+        if (err) {
+          console.error('Error fetching card data:', err);
+          return res.status(500).json({ error: 'Error fetching card data', details: err.message });
+        }
+
+        // Send response with required information
+        res.json({ learns: learnsResults });
+      }
+    );
+  });
+});
+
 app.post('/assessment', (req, res) => {
   const { patientID, category, subCategory } = req.body;
 
@@ -487,7 +528,7 @@ app.post('/submitQuiz', (req, res) => {
     }
 
     // Extract categories and subcategories from learnsResults
-    const categories = learnsResults.map(learn => learn.category).join(' ');
+    const categories = learnsResults.map(learn => learn.category).join(" | ");
     const subcategories = learnsResults.map(learn => learn.subCategory).join(' ');
     console.log('Submit Date :',submitDate);
     console.log('Categories:', categories);
@@ -513,7 +554,26 @@ app.post('/submitQuiz', (req, res) => {
 });
 
 
+app.get('/patients/:patientId', (req, res) => {
+  const patientId = req.params.patientId;
 
+  // Replace the query with your actual query to fetch patient details
+  const query = 'SELECT * FROM patient WHERE patientid = ?';
+
+  pool.query(query, [patientId], (err, results) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).json({ error: 'Error fetching patient details' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    const patientDetails = results[0];
+    res.json(patientDetails);
+  });
+});
 
 
 // app.get('/progress',function(req,res){
