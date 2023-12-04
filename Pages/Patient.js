@@ -78,11 +78,16 @@ function Patient({ navigation }) {
               <Text>{`Age: ${calculateAge(patientDetails2.dob)}`}</Text>
 
               {/* Displaying data.learns */}
-              <Box style={styles.learnsBox}>
-                {patientDetails.learns.map((learn, index) => (
-                  <Text key={index}>{`Category: ${learn.category}, SubCategory: ${learn.subCategory}`}</Text>
-                ))}
-              </Box>
+                <Box style={styles.learnsBox}>
+                  {patientDetails && patientDetails.learns && Array.isArray(patientDetails.learns) ? (
+                    patientDetails.learns.map((learn, index) => (
+                      <Text key={index}>{`Category: ${learn.category}, SubCategory: ${learn.subCategory}`}</Text>
+                    ))
+                  ) : (
+                    <Text>No learns data available</Text>
+                  )}
+                </Box>
+
             </Box>
 
             <Button

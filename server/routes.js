@@ -390,6 +390,29 @@ app.post('/AssignCards',function(req,res){
     });
 })  
 
+app.post('/removeCards', (req, res) => {
+  const { patientId, mainCategory, subCategory } = req.body;
+
+  console.log('Removing cards for patient ID:', patientId);
+  console.log('Main Category:', mainCategory);
+  console.log('Sub Category:', subCategory);
+
+  // Execute a SQL query to remove cards based on patient ID, main category, and sub category
+  pool.query(
+    'DELETE FROM learns WHERE patientID = ? AND category = ? AND subCategory = ?',
+    [patientId, mainCategory, subCategory],
+    (err, result) => {
+      if (err) {
+        console.error('Error removing cards:', err);
+        return res.status(500).json({ error: 'Error removing cards', details: err.message });
+      }
+
+      console.log('Cards removed successfully');
+      res.json({ success: true });
+    }
+  );
+});
+
 app.get('/learns/:patientID', (req, res) => {
   const patientID = req.params.patientID;
 
