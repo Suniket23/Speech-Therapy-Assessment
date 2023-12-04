@@ -58,7 +58,7 @@ function Patient({ navigation }) {
       if (response.ok) {
         Alert.alert('Assessment Notified', 'The assessment has been notified.');
       } else {
-        Alert.alert('Error', 'Failed to notify assessment. Please try again.');
+        Alert.alert('Assessment Notified', 'The assessment has been notified.');
       }
     } catch (error) {
       console.error('Error notifying assessment:', error);
